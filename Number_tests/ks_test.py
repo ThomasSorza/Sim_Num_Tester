@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class KsTest:
-    def __init__(self, ri_nums =[]):
+    def __init__(self, ri_nums =[], n_intervals = 10):
         self.ri = ri_nums
         self.n = len(ri_nums)
         self.average = mean(ri_nums)
@@ -22,7 +22,7 @@ class KsTest:
         self.passed = False
         self.alpha = 0.05
         self.intervals = []
-        self.n_intervals = 10
+        self.n_intervals = n_intervals
     
     def calculate_oia(self):
         cum_freq = 0

@@ -124,6 +124,8 @@ class VarianceTest:
         self.calculateInferiorLimit()
         if self.inferior_limit <= self.variance <= self.superior_limit:
             self.passed = True
+        else:
+            self.passed = False
         return self.passed
 
     def plotLimitsAndVariance(self):

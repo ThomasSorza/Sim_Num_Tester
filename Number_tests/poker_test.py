@@ -31,6 +31,8 @@ class PokerTest:
         self.calculate_total_sum()
         if (self.total_sum < self.chi_reverse):
             self.passed = True
+        else:
+            self.passed = False
         return self.passed
     
     def calculate_total_sum(self):

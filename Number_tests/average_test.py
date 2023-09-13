@@ -92,6 +92,8 @@ class AverageTest:
     def checkIfPassed(self): #check if the test is passed
         if self.inferior_limit <= self.average <= self.superior_limit:
             self.passed = True
+        else:
+            self.passed = False
         return self.passed
     
     def clear(self):
