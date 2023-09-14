@@ -144,45 +144,47 @@ class PokerTest:
     import matplotlib.pyplot as plt
 
     def plot_totalSum_vs_chiReverse(self):
-        x = ['SUM (Ei - Oi)2 / Ei', 'Chi2_reverse']  
-        y = [self.total_sum, self.chi_reverse]    
-        colors = ['purple', 'yellow']
-        fig, ax = plt.subplots()
-        bars = plt.bar(x, y, color=['purple', 'yellow'])
-        plt.bar(x, y, edgecolor='black', color=colors)
-        plt.xlabel('Índices')
-        plt.ylabel('Valores')
-        plt.title('Gráfico de Barras: chi_reverse vs. total_sum')
-        for bar, value in zip(bars, y):
-            ax.annotate(str(value), xy=(bar.get_x() + bar.get_width() / 2, value), xytext=(0, 1),
-                        textcoords='offset points', ha='center', va='bottom')
-        # Mostrar el gráfico
-        plt.show()
+        if self.n != 0:
+            x = ['SUM (Ei - Oi)2 / Ei', 'Chi2_reverse']  
+            y = [self.total_sum, self.chi_reverse]    
+            colors = ['purple', 'yellow']
+            fig, ax = plt.subplots()
+            bars = plt.bar(x, y, color=['purple', 'yellow'])
+            plt.bar(x, y, edgecolor='black', color=colors)
+            plt.xlabel('Índices')
+            plt.ylabel('Valores')
+            plt.title('Gráfico de Barras: chi_reverse vs. total_sum')
+            for bar, value in zip(bars, y):
+                ax.annotate(str(value), xy=(bar.get_x() + bar.get_width() / 2, value), xytext=(0, 1),
+                            textcoords='offset points', ha='center', va='bottom')
+            # Mostrar el gráfico
+            plt.show()
     
     def plot_oi_vs_ei(self):
-        # Datos de ejemplo para las 7 barras delanteras y traseras
-        hands = ['D', 'O', 'T', 'K', 'F', 'P', 'Q'] #TODO: cambiar a manos
-        oi = self.oi #obtenidas
-        ei = self.ei #esperadas
+        if self.n != 0:
+            # Datos de ejemplo para las 7 barras delanteras y traseras
+            hands = ['D', 'O', 'T', 'K', 'F', 'P', 'Q'] #TODO: cambiar a manos
+            oi = self.oi #obtenidas
+            ei = self.ei #esperadas
 
-        # Ajuste para desplazar ligeramente las barras
-        ancho_barra = 0.35
-        indice = np.arange(len(hands))
-        ancho_total = 0.4  # Ancho total de ambas barras
+            # Ajuste para desplazar ligeramente las barras
+            ancho_barra = 0.35
+            indice = np.arange(len(hands))
+            ancho_total = 0.4  # Ancho total de ambas barras
 
-        # Crear el gráfico de barras desplazadas
-        fig, ax = plt.subplots()
-        oi = ax.bar(indice - ancho_barra / 2, oi, ancho_barra, label='optenidas')
-        ei = ax.bar(indice + ancho_barra / 2, ei, ancho_barra, label='esperadas', alpha=0.7)
+            # Crear el gráfico de barras desplazadas
+            fig, ax = plt.subplots()
+            oi = ax.bar(indice - ancho_barra / 2, oi, ancho_barra, label='optenidas')
+            ei = ax.bar(indice + ancho_barra / 2, ei, ancho_barra, label='esperadas', alpha=0.7)
 
-        ax.set_xlabel('Hands')
-        ax.set_ylabel('Frecuency')
-        ax.set_title('Hands vs Frecuency (Obtained vs Expected)')
-        ax.set_xticks(indice)
-        ax.set_xticklabels(hands)
-        ax.legend()
+            ax.set_xlabel('Hands')
+            ax.set_ylabel('Frecuency')
+            ax.set_title('Hands vs Frecuency (Obtained vs Expected)')
+            ax.set_xticks(indice)
+            ax.set_xticklabels(hands)
+            ax.legend()
 
-        plt.show()
+            plt.show()
         
     def __str__(self):
         return f"PokerTest(ri_nums={self.ri_nums}, prob={self.prob}, oi={self.oi}, ei={self.ei}, eid={self.eid}, passed={self.passed}, n={self.n}, total_sum={self.total_sum}, chi_reverse={self.chi_reverse})"

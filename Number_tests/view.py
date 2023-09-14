@@ -4,6 +4,7 @@ from presenter import Presenter
 from poker_test import PokerTest
 from average_test import AverageTest
 from variance_test import VarianceTest
+from ks_test import KsTest
 class MainWindow(QMainWindow):
     def __init__(self, presenter):
         super().__init__()
@@ -44,15 +45,16 @@ class MainWindow(QMainWindow):
         
     #poker test events
     def doPokerTest(self):
-        pokertest = PokerTest(self.presenter.ri_numbers)
-        self.presenter.poker_test = pokertest
-        self.presenter.do_poker_test()
-        if self.presenter.poker_test.passed:
-            self.poker_tab.status.setText("Estado de la prueba: Passed")
-        else:
-            self.poker_tab.status.setText("Estado de la prueba: Failed")
-        self.poker_tab.sum_val.setText(f"Valor de la sumatoria: {self.presenter.poker_test.total_sum}")
-        self.poker_tab.chi_val.setText(f"Valor de la prueba chi inversa: {self.presenter.poker_test.chi_reverse}")
+        if (len(self.presenter.ri_numbers) != 0):
+            pokertest = PokerTest(self.presenter.ri_numbers)
+            self.presenter.poker_test = pokertest
+            self.presenter.do_poker_test()
+            if self.presenter.poker_test.passed:
+                self.poker_tab.status.setText("Estado de la prueba: Passed")
+            else:
+                self.poker_tab.status.setText("Estado de la prueba: Failed")
+            self.poker_tab.sum_val.setText(f"Valor de la sumatoria: {self.presenter.poker_test.total_sum}")
+            self.poker_tab.chi_val.setText(f"Valor de la prueba chi inversa: {self.presenter.poker_test.chi_reverse}")
 
     def showGraph1Poker(self):
         self.presenter.poker_test.plot_totalSum_vs_chiReverse()
@@ -62,34 +64,34 @@ class MainWindow(QMainWindow):
     
     #means test events
     def doAverageTest(self):
-        test = AverageTest(self.presenter.ri_numbers)
-        self.presenter.average_test = test
-        self.presenter.do_average_test()
-        if self.presenter.average_test.passed:
-            self.means_tab.status.setText("Estado de la prueba: Passed")
-        else:
-            self.means_tab.status.setText("Estado de la prueba: Failed")
-        self.means_tab.ls.setText(f"Valor Limite Superior: {self.presenter.average_test.superior_limit}")
-        self.means_tab.mean.setText(f"Valor Media: {self.presenter.average_test.average}")
-        self.means_tab.li.setText(f"Valor Limite Inferior: {self.presenter.average_test.inferior_limit}")
-    
+        if (len(self.presenter.ri_numbers) != 0):
+            test = AverageTest(self.presenter.ri_numbers)
+            self.presenter.average_test = test
+            self.presenter.do_average_test()
+            if self.presenter.average_test.passed:
+                self.means_tab.status.setText("Estado de la prueba: Passed")
+            else:
+                self.means_tab.status.setText("Estado de la prueba: Failed")
+            self.means_tab.ls.setText(f"Valor Limite Superior: {self.presenter.average_test.superior_limit}")
+            self.means_tab.mean.setText(f"Valor Media: {self.presenter.average_test.average}")
+            self.means_tab.li.setText(f"Valor Limite Inferior: {self.presenter.average_test.inferior_limit}")
+        
     def showAverageTestG(self):
         self.presenter.average_test.plotLimitsAndAverage()
         
     #variance test events
     def doVarianceTest(self):
-        print("variance Test")
-        test = VarianceTest(self.presenter.ri_numbers)
-        self.presenter.variance_test = test
-        self.presenter.do_variance_test()
-        print(self.presenter.variance_test.ri_numbers)
-        if self.presenter.variance_test.passed:
-            self.variance_tab.status.setText("Estado de la prueba: Passed")
-        else:
-            self.variance_tab.status.setText("Estado de la prueba: Failed")
-        self.variance_tab.ls.setText(f"Valor Limite Superior: {self.presenter.variance_test.superior_limit}")
-        self.variance_tab.variance.setText(f"Valor Varianza: {self.presenter.variance_test.variance}")
-        self.variance_tab.li.setText(f"Valor Limite Inferior: {self.presenter.variance_test.inferior_limit}")
+        if (len(self.presenter.ri_numbers) != 0):
+            self.presenter.variance_test = VarianceTest(self.presenter.ri_numbers)
+            self.presenter.do_variance_test()
+            print(self.presenter.variance_test.ri_numbers)
+            if self.presenter.variance_test.passed:
+                self.variance_tab.status.setText("Estado de la prueba: Passed")
+            else:
+                self.variance_tab.status.setText("Estado de la prueba: Failed")
+            self.variance_tab.ls.setText(f"Valor Limite Superior: {self.presenter.variance_test.superior_limit}")
+            self.variance_tab.variance.setText(f"Valor Varianza: {self.presenter.variance_test.variance}")
+            self.variance_tab.li.setText(f"Valor Limite Inferior: {self.presenter.variance_test.inferior_limit}")
     
     def showVarianceTestG(self):
         self.presenter.variance_test.plotLimitsAndVariance()
@@ -102,7 +104,7 @@ class PokerTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("Descripcion de las manos:\n (D) Todos Diferentes\n (O) Un par \n (T) Dos pares \n (K) Tercia \n (F) Tercia y Par (Full house) \n (P )Cuatro del mismo valor (poker)\n (Q) Quintilla") 
+        label = QLabel("PRUEBA DE POKER\n\nDescripcion de las manos:\n (D) Todos Diferentes\n (O) Un par \n (T) Dos pares \n (K) Tercia \n (F) Tercia y Par (Full house) \n (P )Cuatro del mismo valor (poker)\n (Q) Quintilla") 
         
         self.status = QLabel("Estado de la prueba:")
         self.sum_val = QLabel("Valor de la sumatoria: ")

@@ -8,11 +8,11 @@ class KsTest:
     def __init__(self, ri_nums =[], n_intervals = 10):
         self.ri = ri_nums
         self.n = len(ri_nums)
-        self.average = mean(ri_nums)
+        self.average = 0
         self.d_max = 0
         self.d_max_p = 0
-        self.min = min(ri_nums)
-        self.max = max(ri_nums)
+        self.min = 0
+        self.max = 0
         self.oi = []
         self.oia = []
         self.prob_oi = []
@@ -31,7 +31,22 @@ class KsTest:
             cum_freq += freq
             self.oia.append(cum_freq)
             
-    def check_test(self):
+    def calculate_min(self):
+        if self.n != 0:
+            self.min = min(self.ri)
+
+    def calculate_max(self):
+        if self.n != 0:
+            self.max = max(self.ri)
+    
+    def calculateAverage(self):
+        if self.n != 0:
+            self.average = mean(self.ri)
+    
+    def checkTest(self):
+        self.calculate_min()
+        self.calculate_max()
+        self.calculateAverage()
         self.calculate_intervals()
         self.calculate_oi()
         self.calculate_oia()
