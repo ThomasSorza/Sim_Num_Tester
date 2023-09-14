@@ -1,6 +1,7 @@
 import sys
 from poker_test import PokerTest
 from file_Manager import FileManager
+from average_test import AverageTest
 #from chi2_test import Chi2Test
 #from ks_test import KSTest
 
@@ -9,6 +10,7 @@ class Presenter:
         self.file_manager = FileManager()
         self.ri_numbers = []
         self.poker_test = PokerTest(self.ri_numbers)
+        self.average_test = AverageTest(self.ri_numbers)
         self.view = None  # Esta será la referencia a la ventana principal
 
     def do_poker_test(self):
@@ -16,7 +18,8 @@ class Presenter:
         self.poker_test.check_poker()
         
     def do_average_test(self):
-        pass
+        self.average_test.ri_numbers = self.ri_numbers
+        self.average_test.checkTest()
     
     def do_variance_test(self):
         pass

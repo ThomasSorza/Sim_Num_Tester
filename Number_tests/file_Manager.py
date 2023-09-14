@@ -12,6 +12,7 @@ class FileManager:
                 for line in lines:
                     line =  line[0:7]
                     lista_de_strings.append(line)
+                    #TODO: check if the 0.00001 as 0.e10
                 self.numbers = [float(s) for s in lista_de_strings]
         except FileNotFoundError:
             print("El archivo de entrada no existe.")

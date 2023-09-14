@@ -7,7 +7,8 @@ import re
 class PokerTest:
     def __init__(self, ri_nums):
         self.ri_nums = ri_nums
-        self.prob = [0.3024,
+        #probabilidades de la cada mano, segun tabla de poker o un libro de estadistica :)
+        self.prob = [0.3024, 
                         0.504,
                         0.108,
                         0.072,
@@ -40,6 +41,8 @@ class PokerTest:
             self.total_sum += num
     
     def calculate_chi_reverse(self):
+        #seis grados de libertad (porque Grados --> 7 manos -1 = 6)
+        #alpha = 0.05
         st.chi2.ppf(1 - 0.05, 6)
 
     def calculate_oi(self):
@@ -135,7 +138,8 @@ class PokerTest:
 
     def calculate_eid(self):
         for i in range(0, len(self.oi)):
-            self.eid.append(((self.oi[i] - self.prob[i] * self.n) ** 2) / (self.prob[i] * self.n))
+            if (self.prob[i] * self.n) != 0:
+                self.eid.append(((self.oi[i] - self.prob[i] * self.n) ** 2) / (self.prob[i] * self.n))
             
     import matplotlib.pyplot as plt
 
@@ -157,7 +161,7 @@ class PokerTest:
     
     def plot_oi_vs_ei(self):
         # Datos de ejemplo para las 7 barras delanteras y traseras
-        hands = ['D', 'h', 'G', 'y', 'p', 't', 'e'] #TODO: cambiar a manos
+        hands = ['D', 'O', 'T', 'K', 'F', 'P', 'Q'] #TODO: cambiar a manos
         oi = self.oi #obtenidas
         ei = self.ei #esperadas
 
