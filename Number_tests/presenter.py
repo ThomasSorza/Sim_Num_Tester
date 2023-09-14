@@ -2,6 +2,7 @@ import sys
 from poker_test import PokerTest
 from file_Manager import FileManager
 from average_test import AverageTest
+from variance_test import VarianceTest
 #from chi2_test import Chi2Test
 #from ks_test import KSTest
 
@@ -22,7 +23,8 @@ class Presenter:
         self.average_test.checkTest()
     
     def do_variance_test(self):
-        pass
+        self.average_test.ri_numbers = self.ri_numbers
+        self.average_test.checkTest()
     
     def do_chi2_test(self):
         pass

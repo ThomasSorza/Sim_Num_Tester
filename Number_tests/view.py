@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QLineEdit, QVBoxLa
 from presenter import Presenter
 from poker_test import PokerTest
 from average_test import AverageTest
+from variance_test import VarianceTest
 class MainWindow(QMainWindow):
     def __init__(self, presenter):
         super().__init__()
@@ -15,9 +16,10 @@ class MainWindow(QMainWindow):
         tab_widget = QTabWidget()
         self.poker_tab = PokerTab(self)  # Pass a reference to the MainWindow
         self.means_tab = MeansTab(self)
+        self.variance_tab = VarianceTab(self)
         tab_widget.addTab(self.poker_tab, "Poker Test")
         tab_widget.addTab(self.means_tab, "Means Test")
-        tab_widget.addTab(VarianceTab(), "Variance Test")
+        tab_widget.addTab(self.variance_tab, "Variance Test")
         tab_widget.addTab(KsTab(), "K-S Test")
         tab_widget.addTab(ChiTab(), "Chi2 Test")
         vbox = QVBoxLayout()
@@ -73,6 +75,24 @@ class MainWindow(QMainWindow):
     
     def showAverageTestG(self):
         self.presenter.average_test.plotLimitsAndAverage()
+        
+    #variance test events
+    def doVarianceTest(self):
+        print("variance Test")
+        test = VarianceTest(self.presenter.ri_numbers)
+        self.presenter.variance_test = test
+        self.presenter.do_variance_test()
+        print(self.presenter.variance_test.ri_numbers)
+        if self.presenter.variance_test.passed:
+            self.variance_tab.status.setText("Estado de la prueba: Passed")
+        else:
+            self.variance_tab.status.setText("Estado de la prueba: Failed")
+        self.variance_tab.ls.setText(f"Valor Limite Superior: {self.presenter.variance_test.superior_limit}")
+        self.variance_tab.variance.setText(f"Valor Varianza: {self.presenter.variance_test.variance}")
+        self.variance_tab.li.setText(f"Valor Limite Inferior: {self.presenter.variance_test.inferior_limit}")
+    
+    def showVarianceTestG(self):
+        self.presenter.variance_test.plotLimitsAndVariance()
 
 #poker tab Class
 class PokerTab(QWidget):
@@ -136,6 +156,39 @@ class MeansTab(QWidget):
         layout.addWidget(self.test)
         layout.addWidget(self.g)
         self.setLayout(layout)
+
+#variance tab Class
+class VarianceTab(QWidget):
+    def __init__(self, main_window):
+        super().__init__()
+        self.main_window = main_window  # Reference to the MainWindow
+        self.initUI()
+
+    def initUI(self):
+        label = QLabel("PRUEBA DE VARIANZAS") 
+        
+        self.status = QLabel("Estado de la prueba: ")
+        self.ls = QLabel("Valor Limite Superior:")
+        self.variance = QLabel("Valor Varianza:")
+        self.li = QLabel("Valor Limite Inferior: ")
+        # Create two buttons
+        self.test = QPushButton("Hacer Prueba")
+        self.g = QPushButton("Ver Limites y Varianza")
+        
+        self.test.clicked.connect(self.main_window.doVarianceTest)
+        self.g.clicked.connect(self.main_window.showVarianceTestG)
+        
+        layout = QVBoxLayout()
+        layout.addWidget(label) #prueba de medias
+        layout.addWidget(self.status)
+        layout.addWidget(self.ls)
+        layout.addWidget(self.variance)
+        layout.addWidget(self.li)
+        layout.addWidget(self.test)
+        layout.addWidget(self.g)
+        self.setLayout(layout)
+        
+    
     
 #variance tab Class
 class ChiTab(QWidget):
@@ -151,37 +204,6 @@ class ChiTab(QWidget):
         layout.addWidget(intervals)
         layout.addWidget(intervalsName)
         self.setLayout(layout)
-        
-class VarianceTab(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        label = QLabel("PRUEBA DE VARIANZAS") 
-        
-        self.status = QLabel("Estado de la prueba: ")
-        self.ls = QLabel("Valor Limite Superior:")
-        self.mean = QLabel("Valor Varianza:")
-        self.li = QLabel("Valor Limite Inferior: ")
-        # Create two buttons
-        self.test = QPushButton("Hacer Prueba")
-        self.grafica = QPushButton("Ver Limites y Varianza")
-        
-        """ self.test.clicked.connect(self.doTest)
-        self.grafica.clicked.connect(self.showGraph) """
-        
-        layout = QVBoxLayout()
-        layout.addWidget(label) #prueba de medias
-        layout.addWidget(self.status)
-        layout.addWidget(self.ls)
-        layout.addWidget(self.mean)
-        layout.addWidget(self.li)
-        layout.addWidget(self.test)
-        layout.addWidget(self.grafica)
-        self.setLayout(layout)
-        
-    
         
 class KsTab(QWidget):
     def __init__(self):

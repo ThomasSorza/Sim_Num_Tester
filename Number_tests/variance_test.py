@@ -17,86 +17,6 @@ class VarianceTest:
         self.chi_square1 = 0.0
         self.chi_square2 = 0.0
 
-    @property
-    def variance(self):
-        return self._variance
-
-    @variance.setter
-    def variance(self, value):
-        self._variance = value
-
-    @property
-    def alpha(self):
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, value):
-        self._alpha = value
-
-    @property
-    def average(self):
-        return self._average
-
-    @average.setter
-    def average(self, value):
-        self._average = value
-
-    @property
-    def acceptation(self):
-        return self._acceptation
-
-    @acceptation.setter
-    def acceptation(self, value):
-        self._acceptation = value
-
-    @property
-    def passed(self):
-        return self._passed
-
-    @passed.setter
-    def passed(self, value):
-        self._passed = value
-
-    @property
-    def n(self):
-        return self._n
-
-    @n.setter
-    def n(self, value):
-        self._n = value
-
-    @property
-    def superior_limit(self):
-        return self._superior_limit
-
-    @superior_limit.setter
-    def superior_limit(self, value):
-        self._superior_limit = value
-
-    @property
-    def inferior_limit(self):
-        return self._inferior_limit
-
-    @inferior_limit.setter
-    def inferior_limit(self, value):
-        self._inferior_limit = value
-
-    @property
-    def chi_square1(self):
-        return self._chi_square1
-
-    @chi_square1.setter
-    def chi_square1(self, value):
-        self._chi_square1 = value
-
-    @property
-    def chi_square2(self):
-        return self._chi_square2
-
-    @chi_square2.setter
-    def chi_square2(self, value):
-        self._chi_square2 = value
-
     def calculateVariance(self):
         self.variance = var(self.ri_numbers)
 
@@ -126,7 +46,6 @@ class VarianceTest:
             self.passed = True
         else:
             self.passed = False
-        return self.passed
 
     def plotLimitsAndVariance(self):
         x = ["Inferior Limit", "Variance", "Superior Limit"]

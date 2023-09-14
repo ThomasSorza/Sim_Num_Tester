@@ -49,7 +49,7 @@ class KsTest:
     def calculate_KS(self):
         alpha = self.alpha
         n = self.n
-        if self.n <= 50:
+        if self.n <= 50 and self.n > 0:
             # Calcular el valor crítico usando la función scipy.stats.ksone.ppf()
             critical_value = stats.ksone.ppf(1 - alpha / 2, n) 
             # OJO: Usamos 1 - alpha / 2 para una prueba bilateral
