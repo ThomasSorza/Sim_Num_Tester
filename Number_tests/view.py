@@ -1,5 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton, QFileDialog
+from PyQt6.QtGui import QDoubleValidator
+
 from presenter import Presenter
 from poker_test import PokerTest
 from average_test import AverageTest
@@ -105,19 +107,15 @@ class PokerTab(QWidget):
 
     def initUI(self):
         label = QLabel("PRUEBA DE POKER\n\nDescripcion de las manos:\n (D) Todos Diferentes\n (O) Un par \n (T) Dos pares \n (K) Tercia \n (F) Tercia y Par (Full house) \n (P )Cuatro del mismo valor (poker)\n (Q) Quintilla") 
-        
         self.status = QLabel("Estado de la prueba:")
         self.sum_val = QLabel("Valor de la sumatoria: ")
         self.chi_val = QLabel("Valor de la prueba chi inversa: ")
-        # Create two buttons
         self.test = QPushButton("Hacer Prueba")
         self.g1 = QPushButton("Ver Gráfica Sumatoria vs Chi Inversa")
         self.g2 = QPushButton("Ver Gráfica Frecuencia de manos")
-        
         self.test.clicked.connect(self.main_window.doPokerTest)
         self.g1.clicked.connect(self.main_window.showGraph1Poker)
         self.g2.clicked.connect(self.main_window.showGraph2Poker)
-        
         layout = QVBoxLayout()
         layout.addWidget(label)
         layout.addWidget(self.sum_val)
@@ -137,7 +135,6 @@ class MeansTab(QWidget):
 
     def initUI(self):
         label = QLabel("PRUEBA DE MEDIAS") 
-        
         self.status = QLabel("Estado de la prueba: ")
         self.ls = QLabel("Valor Limite Superior:")
         self.mean = QLabel("Valor Media:")
@@ -145,10 +142,8 @@ class MeansTab(QWidget):
         # Create two buttons
         self.test = QPushButton("Hacer Prueba")
         self.g = QPushButton("Ver Limites y media")
-        
         self.test.clicked.connect(self.main_window.doAverageTest)
         self.g.clicked.connect(self.main_window.showAverageTestG)
-        
         layout = QVBoxLayout()
         layout.addWidget(label) #prueba de medias
         layout.addWidget(self.status)
@@ -168,18 +163,14 @@ class VarianceTab(QWidget):
 
     def initUI(self):
         label = QLabel("PRUEBA DE VARIANZAS") 
-        
         self.status = QLabel("Estado de la prueba: ")
         self.ls = QLabel("Valor Limite Superior:")
         self.variance = QLabel("Valor Varianza:")
         self.li = QLabel("Valor Limite Inferior: ")
-        # Create two buttons
         self.test = QPushButton("Hacer Prueba")
         self.g = QPushButton("Ver Limites y Varianza")
-        
         self.test.clicked.connect(self.main_window.doVarianceTest)
         self.g.clicked.connect(self.main_window.showVarianceTestG)
-        
         layout = QVBoxLayout()
         layout.addWidget(label) #prueba de medias
         layout.addWidget(self.status)
@@ -190,34 +181,36 @@ class VarianceTab(QWidget):
         layout.addWidget(self.g)
         self.setLayout(layout)
         
-    
-    
-#variance tab Class
-class ChiTab(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        intervals = QLabel("Intervalos:")
-        intervalsName = QLineEdit()
-        
-        layout = QVBoxLayout()
-        layout.addWidget(intervals)
-        layout.addWidget(intervalsName)
-        self.setLayout(layout)
-        
+#Ks tab Class
 class KsTab(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
-        label = QLabel("Kolmogorov-Smirnov test")
-        
+        label = QLabel("PRUEBA Kolmogorov-Smirnov")
         intervals = QLabel("Intervalos:")
         intervalsName = QLineEdit()
-        
+        double_validator = QDoubleValidator()
+        intervalsName.setValidator(double_validator)
+        layout = QVBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(intervals)
+        layout.addWidget(intervalsName)
+        self.setLayout(layout)
+
+#Chi2 tab Class
+class ChiTab(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        label = QLabel("PRUEBA CHI-CUADRADO")
+        intervals = QLabel("Intervalos:")
+        intervalsName = QLineEdit()
+        double_validator = QDoubleValidator()
+        intervalsName.setValidator(double_validator)
         layout = QVBoxLayout()
         layout.addWidget(label)
         layout.addWidget(intervals)

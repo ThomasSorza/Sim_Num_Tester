@@ -127,6 +127,10 @@ class KsTest:
                         textcoords='offset points', ha='center', va='bottom')
         plt.show()
 
+    def plotIntervals(self):
+        #TODO:plot all intervals
+        pass
+            
 def main():
     ks_test = KsTest([
     0.991508, 0.790864, 0.603322, 0.913592, 0.63023,
@@ -140,8 +144,7 @@ def main():
     0.211966, 0.212726, 0.777375, 0.803119, 0.900774,
     0.821933, 0.619674, 0.893804, 0.109495, 0.033824
 ])
-
-    ks_test.check_test()
+    ks_test.checkTest()
     print(ks_test.d_max)
     print(ks_test.d_max_p)
     print(ks_test.passed)
