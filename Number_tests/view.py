@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QDialogButtonBox, QPushButton
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QDialogButtonBox, QPushButton, QFileDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,6 +27,12 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         central_widget.setLayout(vbox)
         self.setCentralWidget(central_widget)
+        
+    def loadFile(self):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Archivos de Texto (*.txt);;Todos los Archivos (*)", options=options)
+        if file_name:
+            print(f"Archivo seleccionado: {file_name}")
 
 class PokerTab(QWidget):
     def __init__(self):
