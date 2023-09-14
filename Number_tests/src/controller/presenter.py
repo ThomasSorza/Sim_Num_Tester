@@ -1,9 +1,9 @@
 import sys
-from poker_test import PokerTest
-from file_Manager import FileManager
-from average_test import AverageTest
-from variance_test import VarianceTest
-from ks_test import KsTest
+from model.poker_test import PokerTest
+from .file_Manager import FileManager
+from model.average_test import AverageTest
+from model.variance_test import VarianceTest
+from model.ks_test import KsTest
 #from chi2_test import Chi2Test
 
 class Presenter:

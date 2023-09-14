@@ -2,11 +2,11 @@ import sys
 from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton, QFileDialog
 from PyQt6.QtGui import QDoubleValidator
 
-from presenter import Presenter
-from poker_test import PokerTest
-from average_test import AverageTest
-from variance_test import VarianceTest
-from ks_test import KsTest
+from controller.presenter import Presenter
+from model.poker_test import PokerTest
+from model.average_test import AverageTest
+from model.variance_test import VarianceTest
+from model.ks_test import KsTest
 class MainWindow(QMainWindow):
     def __init__(self, presenter):
         super().__init__()
