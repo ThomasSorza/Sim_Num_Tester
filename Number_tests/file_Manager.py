@@ -8,10 +8,11 @@ class FileManager:
         try:
             with open(self.input_file_path, 'r') as input_file:
                 lines = input_file.readlines()
+                lista_de_strings = []
                 for line in lines:
                     line =  line[0:7]
-
-                    self.numbers.append(line)
+                    lista_de_strings.append(line)
+                self.numbers = [float(s) for s in lista_de_strings]
         except FileNotFoundError:
             print("El archivo de entrada no existe.")
         except Exception as e:

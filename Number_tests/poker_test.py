@@ -179,6 +179,9 @@ class PokerTest:
         ax.legend()
 
         plt.show()
+        
+    def __str__(self):
+        return f"PokerTest(ri_nums={self.ri_nums}, prob={self.prob}, oi={self.oi}, ei={self.ei}, eid={self.eid}, passed={self.passed}, n={self.n}, total_sum={self.total_sum}, chi_reverse={self.chi_reverse})"
 
     
 def main():

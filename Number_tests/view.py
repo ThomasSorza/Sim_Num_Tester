@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton, QFileDialog
 from presenter import Presenter
-
+from poker_test import PokerTest
 class MainWindow(QMainWindow):
     def __init__(self, presenter):
         super().__init__()
@@ -12,7 +12,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Number tests")
         self.setGeometry(100, 100, 500, 400) 
         tab_widget = QTabWidget()
-        tab_widget.addTab(PokerTab(), "Poker Test")
+        self.poker_tab = PokerTab(self)  # Pass a reference to the MainWindow
+        tab_widget.addTab(self.poker_tab, "Poker Test")
         tab_widget.addTab(MeansTab(), "Means Test")
         tab_widget.addTab(VarianceTab(), "Variance Test")
         tab_widget.addTab(KsTab(), "K-S Test")
@@ -40,11 +41,28 @@ class MainWindow(QMainWindow):
             self.presenter.add_numbers()
             self.status_label.setText(f"File Selected: {file_name}")
             print(self.presenter.ri_numbers)
+            
+    def doPokerTest(self):
+        pokertest = PokerTest(self.presenter.ri_numbers)
+        self.presenter.poker_test = pokertest
+        self.presenter.do_poker_test()
+        if self.presenter.poker_test.passed:
+            self.poker_tab.status.setText("Estado de la prueba: Passed")
+        else:
+            self.poker_tab.status.setText("Estado de la prueba: Failed")
+        self.poker_tab.sum_val.setText(f"Valor de la sumatoria: {self.presenter.poker_test.total_sum}")
+        self.poker_tab.chi_val.setText(f"Valor de la prueba chi inversa: {self.presenter.poker_test.chi_reverse}")
 
+    def showGraph1Poker(self):
+        self.presenter.poker_test.plot_totalSum_vs_chiReverse()
+        
+    def showGraph2Poker(self):
+        self.presenter.poker_test.plot_oi_vs_ei()
 
 class PokerTab(QWidget):
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window  # Reference to the MainWindow
         self.initUI()
 
     def initUI(self):
@@ -54,41 +72,25 @@ class PokerTab(QWidget):
         self.sum_val = QLabel("Valor de la sumatoria: ")
         self.chi_val = QLabel("Valor de la prueba chi inversa: ")
         # Create two buttons
-        self.button0 = QPushButton("Hacer Prueba")
-        self.button1 = QPushButton("Ver Gráfica Dmax y Dmax_p")
-        self.button2 = QPushButton("Ver Gráfica Frecuencia de manos")
+        self.test = QPushButton("Hacer Prueba")
+        self.g1 = QPushButton("Ver Gráfica Sumatoria vs Chi Inversa")
+        self.g2 = QPushButton("Ver Gráfica Frecuencia de manos")
         
-        self.button0.clicked.connect(self.doTest)
-        self.button1.clicked.connect(self.showGraph1)
-        self.button2.clicked.connect(self.showGraph2)
+        self.test.clicked.connect(self.main_window.doPokerTest)
+        self.g1.clicked.connect(self.main_window.showGraph1Poker)
+        self.g2.clicked.connect(self.main_window.showGraph2Poker)
         
         layout = QVBoxLayout()
         layout.addWidget(label)
         layout.addWidget(self.sum_val)
         layout.addWidget(self.chi_val)
         layout.addWidget(self.status)
-        layout.addWidget(self.button0)
-        layout.addWidget(self.button1)
-        layout.addWidget(self.button2)
+        layout.addWidget(self.test)
+        layout.addWidget(self.g1)
+        layout.addWidget(self.g2)
         self.setLayout(layout)
         
-    def doTest(self):
-        #super.exe_test()
-        test = True
-        if test:
-            self.status.setText("Estado de la prueba: Passed")
-        else:
-            self.status.setText("Estado de la prueba: Failed")
-        # Define the function to be executed when button0 is clicked
-        print("Hacer Prueba button clicked")
-
-    def showGraph1(self):
-        # Define the function to be executed when button1 is clicked
-        print("Ver Gráfica 1 button clicked")
-
-    def showGraph2(self):
-        # Define the function to be executed when button2 is clicked
-        print("Ver Gráfica 2 button clicked")
+    
         
 class ChiTab(QWidget):
     def __init__(self):
