@@ -7,32 +7,33 @@ from variance_test import VarianceTest
 from file_Manager import FileManager
 #from chi2_test import Chi2Test
 #from ks_test import KSTest
-
 class Presenter:
     def __init__(self):
         self.ri_numbers = []
-        self.poker_test = None
-        self.variance_test = None
-        self.average_test = None
-        self.chi2_test = None
-        self.ks_test = None
-        self.file_manager = FileManager()
+        self.poker_test = PokerTest(self.ri_numbers)
+        self.variance_test = PokerTest(self.ri_numbers)
+        self.average_test = PokerTest(self.ri_numbers)
+        self.chi2_test = PokerTest(self.ri_numbers)
+        self.ks_test = PokerTest(self.ri_numbers)
         self.app = QApplication(sys.argv)
         self.main_window = MainWindow(self)
 
     def create_tests(self):
-        if(self.ri_numbers != []):
+        if self.ri_numbers != []:
             self.poker_test = PokerTest(self.ri_numbers)
             self.variance_test = VarianceTest(self.ri_numbers)
             self.average_test = AverageTest(self.ri_numbers)
 
+    def print(self):
+        print("Hola")
+
     def run(self):
         self.main_window.show()
         sys.exit(self.app.exec())
-        
+
 def main():
     presenter = Presenter()
     presenter.run()
-    
+
 if __name__ == "__main__":
     main()
