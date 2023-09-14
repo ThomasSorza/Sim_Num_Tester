@@ -136,7 +136,7 @@ class VarianceTest:
 
         bars = ax.bar(x, y, color=['red', 'blue', 'green'])
         plt.title('Inferior Limit, Variance, and Superior Limit')
-        plt.xlabel('Index')
+        plt.xlabel('Medidas')
         plt.ylabel('Value')
 
         for bar in bars:

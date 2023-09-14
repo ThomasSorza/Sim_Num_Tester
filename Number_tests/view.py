@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton, QFileDialog
 from presenter import Presenter
 
 class MainWindow(QMainWindow):
@@ -10,6 +10,7 @@ class MainWindow(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("Number tests")
+        self.setGeometry(100, 100, 500, 400) 
         tab_widget = QTabWidget()
         tab_widget.addTab(PokerTab(), "Poker Test")
         tab_widget.addTab(MeansTab(), "Means Test")
@@ -47,10 +48,47 @@ class PokerTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("Poker Test")
+        label = QLabel("Descripcion de las manos:\n (D) Todos Diferentes\n (O) Un par \n (T) Dos pares \n (K) Tercia \n (F) Tercia y Par (Full house) \n (P )Cuatro del mismo valor (poker)\n (Q) Quintilla") 
+        
+        self.status = QLabel("Estado de la prueba:")
+        self.sum_val = QLabel("Valor de la sumatoria: ")
+        self.chi_val = QLabel("Valor de la prueba chi inversa: ")
+        # Create two buttons
+        self.button0 = QPushButton("Hacer Prueba")
+        self.button1 = QPushButton("Ver Gráfica Dmax y Dmax_p")
+        self.button2 = QPushButton("Ver Gráfica Frecuencia de manos")
+        
+        self.button0.clicked.connect(self.doTest)
+        self.button1.clicked.connect(self.showGraph1)
+        self.button2.clicked.connect(self.showGraph2)
+        
         layout = QVBoxLayout()
         layout.addWidget(label)
+        layout.addWidget(self.sum_val)
+        layout.addWidget(self.chi_val)
+        layout.addWidget(self.status)
+        layout.addWidget(self.button0)
+        layout.addWidget(self.button1)
+        layout.addWidget(self.button2)
         self.setLayout(layout)
+        
+    def doTest(self):
+        #super.exe_test()
+        test = True
+        if test:
+            self.status.setText("Estado de la prueba: Passed")
+        else:
+            self.status.setText("Estado de la prueba: Failed")
+        # Define the function to be executed when button0 is clicked
+        print("Hacer Prueba button clicked")
+
+    def showGraph1(self):
+        # Define the function to be executed when button1 is clicked
+        print("Ver Gráfica 1 button clicked")
+
+    def showGraph2(self):
+        # Define the function to be executed when button2 is clicked
+        print("Ver Gráfica 2 button clicked")
         
 class ChiTab(QWidget):
     def __init__(self):
@@ -58,9 +96,12 @@ class ChiTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("Chi2 Test")
+        intervals = QLabel("Intervalos:")
+        intervalsName = QLineEdit()
+        
         layout = QVBoxLayout()
-        layout.addWidget(label)
+        layout.addWidget(intervals)
+        layout.addWidget(intervalsName)
         self.setLayout(layout)
         
 class MeansTab(QWidget):
@@ -69,10 +110,42 @@ class MeansTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("Means Test")
+        label = QLabel("PRUEBA DE MEDIAS") 
+        
+        self.status = QLabel("Estado de la prueba: ")
+        self.ls = QLabel("Valor Limite Superior:")
+        self.mean = QLabel("Valor Media:")
+        self.li = QLabel("Valor Limite Inferior: ")
+        # Create two buttons
+        self.test = QPushButton("Hacer Prueba")
+        self.grafica = QPushButton("Ver Limites y media")
+        
+        self.test.clicked.connect(self.doTest)
+        self.grafica.clicked.connect(self.showGraph)
+        
         layout = QVBoxLayout()
-        layout.addWidget(label)
+        layout.addWidget(label) #prueba de medias
+        layout.addWidget(self.status)
+        layout.addWidget(self.ls)
+        layout.addWidget(self.mean)
+        layout.addWidget(self.li)
+        layout.addWidget(self.test)
+        layout.addWidget(self.grafica)
         self.setLayout(layout)
+        
+    def doTest(self):
+        #super.exe_test()
+        test = True
+        if test:
+            self.status.setText("Estado de la prueba: Passed")
+        else:
+            self.status.setText("Estado de la prueba: Failed")
+        # Define the function to be executed when button0 is clicked
+        print("Hacer Prueba button clicked")
+    
+    def showGraph(self):
+        #plot
+        print("grafica")
         
 class VarianceTab(QWidget):
     def __init__(self):
@@ -80,10 +153,42 @@ class VarianceTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("Variance Test")
+        label = QLabel("PRUEBA DE VARIANZAS") 
+        
+        self.status = QLabel("Estado de la prueba: ")
+        self.ls = QLabel("Valor Limite Superior:")
+        self.mean = QLabel("Valor Varianza:")
+        self.li = QLabel("Valor Limite Inferior: ")
+        # Create two buttons
+        self.test = QPushButton("Hacer Prueba")
+        self.grafica = QPushButton("Ver Limites y Varianza")
+        
+        self.test.clicked.connect(self.doTest)
+        self.grafica.clicked.connect(self.showGraph)
+        
         layout = QVBoxLayout()
-        layout.addWidget(label)
+        layout.addWidget(label) #prueba de medias
+        layout.addWidget(self.status)
+        layout.addWidget(self.ls)
+        layout.addWidget(self.mean)
+        layout.addWidget(self.li)
+        layout.addWidget(self.test)
+        layout.addWidget(self.grafica)
         self.setLayout(layout)
+        
+    def doTest(self):
+        #super.exe_test()
+        test = True
+        if test:
+            self.status.setText("Estado de la prueba: Passed")
+        else:
+            self.status.setText("Estado de la prueba: Failed")
+        # Define the function to be executed when button0 is clicked
+        print("Hacer Prueba button clicked")
+    
+    def showGraph(self):
+        #plot
+        print("grafica")
         
 class KsTab(QWidget):
     def __init__(self):
@@ -92,6 +197,12 @@ class KsTab(QWidget):
 
     def initUI(self):
         label = QLabel("Kolmogorov-Smirnov test")
+        
+        intervals = QLabel("Intervalos:")
+        intervalsName = QLineEdit()
+        
         layout = QVBoxLayout()
         layout.addWidget(label)
+        layout.addWidget(intervals)
+        layout.addWidget(intervalsName)
         self.setLayout(layout)
