@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QDialogButtonBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QDialogButtonBox, QPushButton
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -19,6 +19,10 @@ class MainWindow(QMainWindow):
         
         vbox = QVBoxLayout()
         vbox.addWidget(tab_widget)
+        
+        self.load_button = QPushButton("Cargar Archivo", self)
+        self.load_button.clicked.connect(self.loadFile)
+        self.statusBar().addWidget(self.load_button)
         
         central_widget = QWidget()
         central_widget.setLayout(vbox)
