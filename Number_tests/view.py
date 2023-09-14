@@ -1,10 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QDialogButtonBox, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog
+from presenter import Presenter
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, presenter):
         super().__init__()
         self.initUI()
+        self.presenter = presenter
 
     def initUI(self):
         self.setWindowTitle("Number tests")
@@ -13,26 +15,31 @@ class MainWindow(QMainWindow):
         tab_widget.addTab(MeansTab(), "Means Test")
         tab_widget.addTab(VarianceTab(), "Variance Test")
         tab_widget.addTab(KsTab(), "K-S Test")
-        tab_widget.addTab(ChiTab(), "Chi2 Test")  # Corrección aquí
-        
-        
+        tab_widget.addTab(ChiTab(), "Chi2 Test")
         
         vbox = QVBoxLayout()
         vbox.addWidget(tab_widget)
         
-        self.load_button = QPushButton("Cargar Archivo", self)
+        self.load_button = QPushButton("Load File", self)
         self.load_button.clicked.connect(self.loadFile)
-        self.statusBar().addWidget(self.load_button)
+        vbox.addWidget(self.load_button)
+        
+        self.status_label = QLabel("Ready")
+        self.statusBar().addWidget(self.status_label)
         
         central_widget = QWidget()
         central_widget.setLayout(vbox)
         self.setCentralWidget(central_widget)
-        
+
     def loadFile(self):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Archivos de Texto (*.txt);;Todos los Archivos (*)", options=options)
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Archivos de Texto (*.txt);;Todos los Archivos (*)")
         if file_name:
-            print(f"Archivo seleccionado: {file_name}")
+            self.presenter.file_manager.input_file_path = file_name
+            self.presenter.file_manager.storage_numbers()
+            self.presenter.add_numbers()
+            self.status_label.setText(f"File Selected: {file_name}")
+            print(self.presenter.ri_numbers)
+
 
 class PokerTab(QWidget):
     def __init__(self):
@@ -40,7 +47,6 @@ class PokerTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        # Aquí puedes agregar elementos a la pestaña de Poker Test
         label = QLabel("Poker Test")
         layout = QVBoxLayout()
         layout.addWidget(label)
@@ -52,7 +58,6 @@ class ChiTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        # Aquí puedes agregar elementos a la pestaña de Poker Test
         label = QLabel("Chi2 Test")
         layout = QVBoxLayout()
         layout.addWidget(label)
@@ -64,7 +69,6 @@ class MeansTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        # Aquí puedes agregar elementos a la pestaña de Poker Test
         label = QLabel("Means Test")
         layout = QVBoxLayout()
         layout.addWidget(label)
@@ -76,7 +80,6 @@ class VarianceTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        # Aquí puedes agregar elementos a la pestaña de Poker Test
         label = QLabel("Variance Test")
         layout = QVBoxLayout()
         layout.addWidget(label)
@@ -88,14 +91,7 @@ class KsTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        # Aquí puedes agregar elementos a la pestaña de Poker Test
         label = QLabel("Kolmogorov-Smirnov test")
         layout = QVBoxLayout()
         layout.addWidget(label)
         self.setLayout(layout)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    main_window = MainWindow()
-    main_window.show()
-    sys.exit(app.exec())

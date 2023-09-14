@@ -9,6 +9,8 @@ class FileManager:
             with open(self.input_file_path, 'r') as input_file:
                 lines = input_file.readlines()
                 for line in lines:
+                    line =  line[0:7]
+
                     self.numbers.append(line)
         except FileNotFoundError:
             print("El archivo de entrada no existe.")

@@ -1,8 +1,15 @@
-from presenter import Presenter  # Importa la clase Presenter desde la ubicación correcta
+import sys
+from PyQt6.QtWidgets import QApplication
+from view import MainWindow
+from presenter import Presenter
 
 def main():
+    app = QApplication(sys.argv)
     presenter = Presenter()
-    presenter.run()
+    main_window = MainWindow(presenter)
+    presenter.set_main_window(main_window)  # Establece la referencia a la ventana principal en el presentador
+    main_window.show()
+    sys.exit(app.exec())
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
