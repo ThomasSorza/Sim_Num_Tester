@@ -8,9 +8,10 @@ from matplotlib.figure import Figure
 from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QVBoxLayout, QPushButton, QFileDialog
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, Presenter):
         super().__init__()
         self.initUI()
+        
     def initUI(self):
         self.setWindowTitle("Number test")
         self.setGeometry(100, 100, 800, 600)
@@ -36,8 +37,7 @@ class MainWindow(QMainWindow):
         
 
     def loadFile(self):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(self, "Abrir Archivo", "", "Archivos de Texto (*.txt);;Todos los Archivos (*)", options=options)
+        file_name, _ = QFileDialog.getOpenFileName(self, "Abrir Archivo", "", "Archivos de Texto (*.txt);;Todos los Archivos (*)")
         if file_name:
             print(f"Archivo seleccionado: {file_name}")
 
