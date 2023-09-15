@@ -5,7 +5,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class KsTest:
-    def __init__(self, ri_nums =[], n_intervals = 10):
+    """
+    Clase que implementa la Prueba de Kolmogorov-Smirnov (KS) para una secuencia de números generados.
+    """
+
+    def __init__(self, ri_nums=[], n_intervals=10):
+        """
+        Inicializa una instancia de KsTest.
+
+        :param ri_nums: Lista de números generados.
+        :param n_intervals: Cantidad de intervalos para la prueba KS.
+        """
         self.ri = ri_nums
         self.n = len(ri_nums)
         self.average = 0
@@ -23,27 +33,42 @@ class KsTest:
         self.alpha = 0.05
         self.intervals = []
         self.n_intervals = n_intervals
-    
+
     def calculate_oia(self):
+        """
+        Calcula la sumatoria acumulada de las frecuencias observadas (oia).
+        """
         cum_freq = 0
 
         for freq in self.oi:
             cum_freq += freq
             self.oia.append(cum_freq)
-            
+
     def calculate_min(self):
+        """
+        Calcula el valor mínimo en la secuencia de números generados.
+        """
         if self.n != 0:
             self.min = min(self.ri)
 
     def calculate_max(self):
+        """
+        Calcula el valor máximo en la secuencia de números generados.
+        """
         if self.n != 0:
             self.max = max(self.ri)
-    
+
     def calculateAverage(self):
+        """
+        Calcula el promedio de la secuencia de números generados.
+        """
         if self.n != 0:
             self.average = mean(self.ri)
-    
+
     def checkTest(self):
+        """
+        Realiza la prueba de Kolmogorov-Smirnov (KS) y establece si ha sido superada.
+        """
         self.calculate_min()
         self.calculate_max()
         self.calculateAverage()
@@ -60,8 +85,11 @@ class KsTest:
             self.passed = True
         else:
             self.passed = False
-    
+
     def calculate_KS(self):
+        """
+        Calcula el valor crítico de Kolmogorov-Smirnov (KS) para la prueba.
+        """
         alpha = self.alpha
         n = self.n
         if self.n <= 50 and self.n > 0:
@@ -72,27 +100,42 @@ class KsTest:
             # Calcular el valor crítico usando la función scipy.stats.kstwobign.isf()
             critical_value = stats.kstwobign.isf(alpha) / np.sqrt(n)
         self.d_max_p = critical_value
-                
+
     def calculate_prob_esp(self):
+        """
+        Calcula las probabilidades esperadas para cada intervalo.
+        """
         for i in range(len(self.oia_a)):
             self.prob_esp.append(self.oia_a[i] / self.n)
-            
+
     def calculate_diff(self):
+        """
+        Calcula las diferencias absolutas entre las probabilidades observadas y esperadas.
+        """
         for i in range(len(self.prob_esp)):
             self.diff.append(abs(self.prob_esp[i] - self.prob_oi[i]))
-        
+
     def calculate_oia_a(self):
-        n1 = self.n/self.n_intervals
+        """
+        Calcula la sumatoria acumulada de las probabilidades esperadas (oia_a).
+        """
+        n1 = self.n / self.n_intervals
         for i in range(self.n_intervals):
-            self.oia_a.append(n1*(i+1))
-        
+            self.oia_a.append(n1 * (i + 1))
+
     def calculate_prob_oi(self):
+        """
+        Calcula las probabilidades observadas para cada intervalo.
+        """
         for i in range(len(self.oia)):
             self.prob_oi.append(self.oia[i] / self.n)
-    
+
     def calculate_oi(self):
+        """
+        Calcula las frecuencias observadas para cada intervalo.
+        """
         self.ri.sort()
-        self.oi = [0] * self.n_intervals  
+        self.oi = [0] * self.n_intervals
         # Iterar a través de los valores de ri y contar en qué intervalo caen
         for valor in self.ri:
             for i, intervalo in enumerate(self.intervals):
@@ -101,8 +144,11 @@ class KsTest:
                     break  # No es necesario seguir buscando en otros intervalos
 
         return self.oi
-    
+
     def calculate_intervals(self):
+        """
+        Calcula los intervalos utilizados para la prueba KS.
+        """
         if self.n != 0:
             n_intervals = self.n_intervals
             interval_size = (self.max - self.min) / n_intervals
@@ -111,15 +157,18 @@ class KsTest:
                 new_interval = (initial, initial + interval_size)
                 self.intervals.append(new_interval)
                 initial = new_interval[1]
-            
+
     def plotDs(self):
-        x = ["D max (error calculado)", "Dmax p (valor KS maximo -> Tabla)"]
+        """
+        Genera un gráfico que muestra los valores Dmax (error calculado) y Dmax_p (valor KS máximo de la tabla).
+        """
+        x = ["Dmax (error calculado)", "Dmax_p (valor KS máximo -> Tabla)"]
         y = [self.d_max, self.d_max_p]
 
         fig, ax = plt.subplots()
         bars = plt.bar(x, y, color=['red', 'blue'])
-        plt.title('Tabla comparacion D max y Dmax p (Error y error maximo)')
-        plt.ylabel('Values')
+        plt.title('Comparación de Dmax (error calculado) y Dmax_p (valor KS máximo -> Tabla)')
+        plt.ylabel('Valores')
         plt.xlabel('Errores')
 
         # Agregar etiquetas de valor en las barras
@@ -129,21 +178,24 @@ class KsTest:
         plt.show()
 
     def plotIntervals(self):
+        """
+        Genera un gráfico que muestra las probabilidades observadas y esperadas en cada intervalo.
+        """
         # Create a list to store interval labels
         interval_labels = []
-        
-        # Create lists to store observed and expected frequencies
-        observed_frequencies = []
-        expected_frequencies = []
+
+        # Create lists to store observed and expected probabilities
+        observed_probabilities = []
+        expected_probabilities = []
 
         for i, interval in enumerate(self.intervals):
             # Define the label for the interval
-            label = f"Interval {i + 1}: [{interval[0]:.3f}, {interval[1]:.3f})"
+            label = f"Intervalo {i + 1}: [{interval[0]:.3f}, {interval[1]:.3f})"
             interval_labels.append(label)
 
-            # Append observed and expected frequencies to their respective lists
-            observed_frequencies.append(self.prob_esp[i])
-            expected_frequencies.append(self.prob_oi[i])
+            # Append observed and expected probabilities to their respective lists
+            observed_probabilities.append(self.prob_esp[i])
+            expected_probabilities.append(self.prob_oi[i])
 
         # Create an array of x positions for the bars
         x = np.arange(len(interval_labels))
@@ -151,13 +203,13 @@ class KsTest:
         # Create a bar chart
         width = 0.35  # Width of the bars
         fig, ax = plt.subplots()
-        observed_bars = ax.bar(x - width / 2, observed_frequencies, width, label='Probabilidad Frecuencia Obtenida')
-        expected_bars = ax.bar(x + width / 2, expected_frequencies, width, label='Probabilidad Frecuencia Esperada')
+        observed_bars = ax.bar(x - width / 2, observed_probabilities, width, label='Probabilidad Observada')
+        expected_bars = ax.bar(x + width / 2, expected_probabilities, width, label='Probabilidad Esperada')
 
         # Add labels, title, and legend
         ax.set_xlabel('Intervalos')
-        ax.set_ylabel('Frequencias')
-        ax.set_title('Frecuencias Probabilidad Obtenida y Probabilidad Esperada')
+        ax.set_ylabel('Probabilidades')
+        ax.set_title('Probabilidades Observadas y Esperadas en Cada Intervalo')
         ax.set_xticks(x)
         ax.set_xticklabels(interval_labels, rotation=45, ha='right')
         ax.legend()
@@ -165,15 +217,18 @@ class KsTest:
         plt.show()
 
     def plotIntervalsFreq(self):
+        """
+        Genera un gráfico que muestra las frecuencias observadas en cada intervalo.
+        """
         # Create a list to store interval labels
         interval_labels = []
 
-        # Create lists to store observed and expected frequencies
+        # Create a list to store observed frequencies
         observed_frequencies = []
 
         for i, interval in enumerate(self.intervals):
             # Define the label for the interval
-            label = f"Interval {i + 1}: [{interval[0]:.3f}, {interval[1]:.3f})"
+            label = f"Intervalo {i + 1}: [{interval[0]:.3f}, {interval[1]:.3f})"
             interval_labels.append(label)
 
             # Append observed frequencies to the list
@@ -187,8 +242,8 @@ class KsTest:
         fig, ax = plt.subplots()
         # Add labels, title, and legend
         ax.set_xlabel('Intervalos')
-        ax.set_ylabel('Frequencia de numeros en cada intervalo')
-        ax.set_title('Frecuencias de numeros Obtenida para cada intervalo')
+        ax.set_ylabel('Frecuencia de Números en Cada Intervalo')
+        ax.set_title('Frecuencias de Números Observadas para Cada Intervalo')
         ax.set_xticks(x)
         ax.set_xticklabels(interval_labels, rotation=45, ha='right')
 
@@ -207,32 +262,3 @@ class KsTest:
         ax.legend()
         plt.tight_layout()
         plt.show()
-
-
-            
-def main():
-    ks_test = KsTest([
-    0.442222, 0.998804, 0.71769, 0.269853, 0.568477,
-    0.36, 0.411249, 0.778008, 0.009591, 0.912916,
-    0.779474, 0.31009, 0.91997, 0.080992, 0.232559,
-    0.609389, 0.053358, 0.851224, 0.778083, 0.652102,
-    0.978415, 0.219255, 0.865409, 0.610148, 0.378051,
-    0.711247, 0.569673, 0.159811, 0.523811, 0.903988,
-    0.495915, 0.050326, 0.260573, 0.009727, 0.759171,
-    0.842146, 0.702157, 0.697722, 0.661416, 0.998833,
-    0.282094, 0.366486, 0.205575, 0.798332, 0.279457,
-    0.332125, 0.422582, 0.105727, 0.537386, 0.091692
-])
-    ks_test.checkTest()
-    print(ks_test.d_max)
-    print(ks_test.d_max_p)
-    print(ks_test.passed)
-    print(ks_test.intervals)
-    print(ks_test.oi)
-    print(ks_test.prob_oi)
-    ks_test.plotDs()
-    ks_test.plotIntervals()
-    ks_test.plotIntervalsFreq()
-
-if __name__ == "__main__":
-    main()

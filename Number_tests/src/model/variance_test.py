@@ -1,10 +1,17 @@
 from numpy import mean, var
-
 import scipy.stats as st
 import matplotlib.pyplot as plt
 
 class VarianceTest:
+    """
+    Clase que implementa la Prueba de Varianza para una secuencia de números generados.
+    """
     def __init__(self, ri_numbers):
+        """
+        Inicializa una instancia de VarianceTest.
+
+        :param ri_numbers: Lista de números generados.
+        """
         self.ri_numbers = ri_numbers
         self.variance = 0.0
         self.alpha = 0.05
@@ -18,24 +25,45 @@ class VarianceTest:
         self.chi_square2 = 0.0
 
     def calculateVariance(self):
+        """
+        Calcula la varianza de la secuencia de números generados.
+        """
         self.variance = var(self.ri_numbers)
 
     def calculateAverage(self):
+        """
+        Calcula el promedio de la secuencia de números generados.
+        """
         self.average = mean(self.ri_numbers)
 
     def calculateChiSquare1(self):
-        self.chi_square1 = st.chi2.ppf(self.alpha/2,self.n-1)
+        """
+        Calcula el valor crítico de chi-cuadrado para el límite inferior.
+        """
+        self.chi_square1 = st.chi2.ppf(self.alpha / 2, self.n - 1)
 
     def calculateChiSquare2(self):
-        self.chi_square2 = st.chi2.ppf(1-self.alpha/2, self.n-1)
+        """
+        Calcula el valor crítico de chi-cuadrado para el límite superior.
+        """
+        self.chi_square2 = st.chi2.ppf(1 - self.alpha / 2, self.n - 1)
 
     def calculateInferiorLimit(self):
-        self.inferior_limit = self.chi_square1/(12*(self.n-1))
+        """
+        Calcula el límite inferior para la varianza.
+        """
+        self.inferior_limit = self.chi_square1 / (12 * (self.n - 1))
 
     def calculateSuperiorLimit(self):
-        self.superior_limit = self.chi_square2/(12*(self.n-1))
+        """
+        Calcula el límite superior para la varianza.
+        """
+        self.superior_limit = self.chi_square2 / (12 * (self.n - 1))
 
     def checkTest(self):
+        """
+        Realiza la Prueba de Varianza y establece si ha sido superada.
+        """
         self.calculateAverage()
         self.calculateVariance()
         self.calculateChiSquare1()
@@ -48,15 +76,18 @@ class VarianceTest:
             self.passed = False
 
     def plotLimitsAndVariance(self):
-        x = ["Inferior Limit", "Variance", "Superior Limit"]
+        """
+        Genera un gráfico que muestra el límite inferior, la varianza y el límite superior.
+        """
+        x = ["Límite Inferior", "Varianza", "Límite Superior"]
         y = [self.inferior_limit, self.variance, self.superior_limit]
 
         fig, ax = plt.subplots()
 
         bars = ax.bar(x, y, color=['red', 'blue', 'green'])
-        plt.title('Inferior Limit, Variance, and Superior Limit')
+        plt.title('Límite Inferior, Varianza y Límite Superior')
         plt.xlabel('Medidas')
-        plt.ylabel('Value')
+        plt.ylabel('Valor')
 
         for bar in bars:
             height = bar.get_height()
@@ -66,6 +97,9 @@ class VarianceTest:
         plt.show()
 
     def clear(self):
+        """
+        Restablece los valores de la prueba.
+        """
         self.variance = 0.0
         self.alpha = 0.05
         self.average = 0.0
@@ -75,25 +109,3 @@ class VarianceTest:
         self.inferior_limit = 0.0
         self.chi_square1 = 0.0
         self.chi_square2 = 0.0
-    
-def main():
-        poker = VarianceTest([
-    0.79817, 0.68468, 0.58381,
-    0.11612, 0.32584, 0.15024,
-    0.28316, 0.61384, 0.44471,
-    0.90924, 0.39663, 0.12679,
-    0.19981, 0.08535, 0.05599])
-        poker.checkTest()
-        print(poker.variance)
-        print(poker.average)
-        print(poker.chi_square1)
-        print(poker.chi_square2)
-        print(poker.superior_limit)
-        print(poker.inferior_limit)
-        print(poker.passed)
-        poker.plotLimitsAndVariance()
-        
-
-if __name__ == "__main__":
-        main() 
-    
