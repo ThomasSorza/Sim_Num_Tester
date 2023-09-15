@@ -3,11 +3,13 @@ from scipy.stats import chi2
 import numpy as np
 import matplotlib.pyplot as plt
 class ChiTest:
-    def __init__(self, ri_values =[], a=8, b=10, intervals_amount = 8):
+    def __init__(self, ri_values =[], intervals_amount = 8, a=8, b=10):
         self.ri_values = ri_values
         self.ni_values = []
         self.a = a
         self.b = b
+        self.niMin = 0
+        self.niMax = 0
         self.num_amount = len(ri_values)
         self.intervals_amount = intervals_amount
         self.intervals_values = []
@@ -25,9 +27,11 @@ class ChiTest:
         self.ni_values.sort()
 
     def obtainMinNiValue(self):
+        self.niMin = min(self.ni_values)
         return min(self.ni_values)
 
     def obtainMaxNiValue(self):
+        self.niMax = max(self.ni_values)
         return max(self.ni_values)
 
     def fillIntervalsValuesArray(self):
@@ -75,7 +79,7 @@ class ChiTest:
         chiSquared = chi2(degrees_of_freedom)
         return chiSquared.ppf(1.0 - margin_of_error)
 
-    def check_test(self):
+    def checkTest(self):
         self.fillNiValues()
         self.sortNiArray()
         self.fillIntervalsValuesArray()
@@ -152,7 +156,7 @@ if __name__ == '__main__':
     0.17735
     ],8, 10, 8)
     
-    udm.check_test()
+    udm.checkTest()
     print(udm.chi_squared_values)
     print(udm.intervals_values)
     print(udm.frequency_obtained)

@@ -4,7 +4,7 @@ from .file_Manager import FileManager
 from model.average_test import AverageTest
 from model.variance_test import VarianceTest
 from model.ks_test import KsTest
-#from chi2_test import Chi2Test
+from model.chi2_test import ChiTest
 
 class Presenter:
     def __init__(self,):
@@ -13,6 +13,7 @@ class Presenter:
         self.poker_test = PokerTest(self.ri_numbers)
         self.average_test = AverageTest(self.ri_numbers)
         self.variance_test = VarianceTest(self.ri_numbers)
+        self.chi2_test = ChiTest(self.ri_numbers)
         self.ks_test = KsTest(self.ri_numbers)
         self.view = None  # Esta será la referencia a la ventana principal
 
@@ -33,7 +34,8 @@ class Presenter:
         self.variance_test.checkTest()
     
     def do_chi2_test(self):
-        pass
+        self.chi2_test.ri_numbers = self.ri_numbers
+        self.chi2_test.checkTest()
     
     def do_ks_test(self):
         self.ks_test.ri_numbers = self.ri_numbers

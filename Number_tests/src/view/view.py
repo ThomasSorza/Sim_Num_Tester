@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QMainWindow, QTabWidget,QMessageBox, QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton, QFileDialog
 from PyQt6.QtGui import QDoubleValidator
 
 from controller.presenter import Presenter
@@ -7,6 +7,7 @@ from model.poker_test import PokerTest
 from model.average_test import AverageTest
 from model.variance_test import VarianceTest
 from model.ks_test import KsTest
+from model.chi2_test import ChiTest
 class MainWindow(QMainWindow):
     def __init__(self, presenter):
         super().__init__()
@@ -21,11 +22,12 @@ class MainWindow(QMainWindow):
         self.means_tab = MeansTab(self)
         self.variance_tab = VarianceTab(self)
         self.ks_tab = KsTab(self)
+        self.chi_tab = ChiTab(self)
         tab_widget.addTab(self.poker_tab, "Poker Test")
         tab_widget.addTab(self.means_tab, "Means Test")
         tab_widget.addTab(self.variance_tab, "Variance Test")
         tab_widget.addTab(self.ks_tab, "K-S Test")
-        tab_widget.addTab(ChiTab(), "Chi2 Test")
+        tab_widget.addTab(self.chi_tab, "Chi2 Test")
         vbox = QVBoxLayout()
         vbox.addWidget(tab_widget)
         self.load_button = QPushButton("Load File", self)
@@ -44,6 +46,13 @@ class MainWindow(QMainWindow):
             self.presenter.file_manager.storage_numbers()
             self.presenter.add_numbers()
             self.status_label.setText(f"File Selected: {file_name}")
+    
+    def showErrorMessage(self, title, message):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Critical)
+        msg_box.setWindowTitle(title)
+        msg_box.setText(message)
+        msg_box.exec()
         
     #poker test events
     def doPokerTest(self):
@@ -122,7 +131,39 @@ class MainWindow(QMainWindow):
     
     def showKsTestG3(self):
         self.presenter.ks_test.plotIntervalsFreq()
+    
+    #chi2 test events
+    def doChi2Test(self):
+        if len(self.presenter.ri_numbers) != 0:
+            numIntervals = self.chi_tab.intervalsNum.text()
+            a = self.chi_tab.a_input.text()
+            b = self.chi_tab.b_input.text()
+            if numIntervals != "" and a != "" and b != "":
+                self.presenter.chi2_test = ChiTest(self.presenter.ri_numbers, int(numIntervals), float(a), float(b))
+            elif numIntervals != "" and a != "" and b == "":
+                self.showErrorMessage("Error", "Falta el valor de b.")
+                return#do not continue with the function
+            elif numIntervals != "" and a == "" and b != "":
+                self.showErrorMessage("Error", "Falta el valor de a.")
+                return#do not continue with the function
+            else :
+                self.presenter.chi2_test = ChiTest(self.presenter.ri_numbers)
+            self.presenter.do_chi2_test()
+            if self.presenter.chi2_test.passed:
+                self.chi_tab.status.setText("Estado de la prueba: Passed")
+            else:
+                self.chi_tab.status.setText("Estado de la prueba: Failed")
+            self.chi_tab.ni_min.setText(f"Valor Ni Maximo: {str(self.presenter.chi2_test.niMax)}")
+            self.chi_tab.ni_max.setText(f"Valor Ni Minimo: {str(self.presenter.chi2_test.niMin)}")
+            self.chi_tab.n.setText(f"Numero de intervalos: {self.presenter.chi2_test.intervals_amount}")
 
+    
+    def showChi2TestG(self):
+        self.presenter.chi2_test.plotChi2()
+        
+    def showChi2TestG2(self):
+        self.presenter.chi2_test.plotFrequencies()
+        
 #poker tab Class
 class PokerTab(QWidget):
     def __init__(self, main_window):
@@ -223,7 +264,7 @@ class KsTab(QWidget):
         self.n = QLabel("Numero de intervalos:")
         self.g = QPushButton("Ver Grafica d_max y d_max_p")
         self.g2 = QPushButton("Ver Grafica de probabilidad de todos los Intervalos")
-        self.g3 = QPushButton("Ver Grafica frucuencia de los intervalos")
+        self.g3 = QPushButton("Ver Grafica frecuencia de los intervalos")
         self.test.clicked.connect(self.main_window.doKsTest)
         self.g.clicked.connect(self.main_window.showKsTestG)
         self.g2.clicked.connect(self.main_window.showKsTestG2)
@@ -232,10 +273,21 @@ class KsTab(QWidget):
         self.intervalsNum = QLineEdit()
         double_validator = QDoubleValidator()
         self.intervalsNum.setValidator(double_validator)
+        self.a = QLabel("Insertar valor de a para Ni (menor):")
+        self.aNum = QLineEdit()
+        self.aNum.setValidator(double_validator)
+        layout = QVBoxLayout()
+        self.b = QLabel("Insertar valor de b para Ni (mayor):")
+        self.bNum = QLineEdit()
+        self.bNum.setValidator(double_validator)
         layout = QVBoxLayout()
         layout.addWidget(label)
         layout.addWidget(self.intervals)
         layout.addWidget(self.intervalsNum)
+        layout.addWidget(self.a)
+        layout.addWidget(self.aNum)
+        layout.addWidget(self.b)
+        layout.addWidget(self.bNum)
         layout.addWidget(self.n)
         layout.addWidget(self.status)
         layout.addWidget(self.mean)
@@ -249,18 +301,49 @@ class KsTab(QWidget):
 
 #Chi2 tab Class
 class ChiTab(QWidget):
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window
         self.initUI()
 
     def initUI(self):
         label = QLabel("PRUEBA CHI-CUADRADO")
-        intervals = QLabel("Intervalos:")
-        intervalsName = QLineEdit()
+        self.status = QLabel("Estado de la prueba: ")
+        self.ni_min = QLabel("Valor Ni Maximo:")
+        self.ni_max = QLabel("Valor Ni Minimo: ")
+        self.test = QPushButton("Hacer Prueba")
+        self.n = QLabel("Numero de intervalos por defecto 8:")
+        self.g = QPushButton("Ver Grafica Suma Chi2 y Chi2Inversa calculada")
+        self.g2 = QPushButton("Ver Grafica frecuencia de los intervalos")
+        self.test.clicked.connect(self.main_window.doChi2Test)
+        self.g.clicked.connect(self.main_window.showChi2TestG)
+        self.g2.clicked.connect(self.main_window.showChi2TestG2)
+        # Input fields for 'a' and 'b'
+        self.a_label = QLabel("Valor 'a' (Valor mas bajo Ni) por defecto 8:")
+        self.b_label = QLabel("Valor 'b' (Valor mas alto Ni) por defecto 10:")
+        self.a_input = QLineEdit()
+        self.b_input = QLineEdit()
         double_validator = QDoubleValidator()
-        intervalsName.setValidator(double_validator)
+        self.a_input.setValidator(double_validator)
+        self.b_input.setValidator(double_validator)
+        
+        self.intervals = QLabel("Insertar Intervalos:")
+        self.intervalsNum = QLineEdit()
+        self.intervalsNum.setValidator(double_validator)
+
         layout = QVBoxLayout()
         layout.addWidget(label)
-        layout.addWidget(intervals)
-        layout.addWidget(intervalsName)
-        self.setLayout(layout)
+        layout.addWidget(self.intervals)
+        layout.addWidget(self.intervalsNum)
+        layout.addWidget(self.a_label)
+        layout.addWidget(self.a_input)
+        layout.addWidget(self.b_label)
+        layout.addWidget(self.b_input)
+        layout.addWidget(self.n)
+        layout.addWidget(self.status)
+        layout.addWidget(self.ni_max)
+        layout.addWidget(self.ni_min)
+        layout.addWidget(self.test)
+        layout.addWidget(self.g)
+        layout.addWidget(self.g2)
+        self.setLayout(layout)    
