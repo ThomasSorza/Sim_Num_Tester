@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 class FileManager:
     """
     Clase para gestionar un archivo que contiene números en formato de texto.
@@ -28,7 +26,7 @@ class FileManager:
                 for line in lines:
                     lista_de_strings.append(line)
                 # Usando Decimal para mayor precisión y evitar errores con notación 'c'
-                self.numbers = [Decimal(s) for s in lista_de_strings]
+                self.numbers = [float(s) for s in lista_de_strings]
                 print(self.numbers)
         except FileNotFoundError:
             print("El archivo de entrada no existe.")
