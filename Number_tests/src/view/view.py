@@ -20,10 +20,11 @@ class MainWindow(QMainWindow):
         self.poker_tab = PokerTab(self)  # Pass a reference to the MainWindow
         self.means_tab = MeansTab(self)
         self.variance_tab = VarianceTab(self)
+        self.ks_tab = KsTab(self)
         tab_widget.addTab(self.poker_tab, "Poker Test")
         tab_widget.addTab(self.means_tab, "Means Test")
         tab_widget.addTab(self.variance_tab, "Variance Test")
-        tab_widget.addTab(KsTab(), "K-S Test")
+        tab_widget.addTab(self.ks_tab, "K-S Test")
         tab_widget.addTab(ChiTab(), "Chi2 Test")
         vbox = QVBoxLayout()
         vbox.addWidget(tab_widget)
@@ -43,7 +44,6 @@ class MainWindow(QMainWindow):
             self.presenter.file_manager.storage_numbers()
             self.presenter.add_numbers()
             self.status_label.setText(f"File Selected: {file_name}")
-            print(self.presenter.ri_numbers)
         
     #poker test events
     def doPokerTest(self):
@@ -86,7 +86,6 @@ class MainWindow(QMainWindow):
         if (len(self.presenter.ri_numbers) != 0):
             self.presenter.variance_test = VarianceTest(self.presenter.ri_numbers)
             self.presenter.do_variance_test()
-            print(self.presenter.variance_test.ri_numbers)
             if self.presenter.variance_test.passed:
                 self.variance_tab.status.setText("Estado de la prueba: Passed")
             else:
@@ -97,6 +96,29 @@ class MainWindow(QMainWindow):
     
     def showVarianceTestG(self):
         self.presenter.variance_test.plotLimitsAndVariance()
+    
+    #ks test events
+    def doKsTest(self):
+        if(len(self.presenter.ri_numbers) != 0):
+            if(self.ks_tab.intervalsNum.text() != ""):
+                self.presenter.ks_test = KsTest(self.presenter.ri_numbers, int(self.ks_tab.intervalsNum.text()))
+            else:
+                self.presenter.ks_test = KsTest(self.presenter.ri_numbers)
+            self.presenter.do_ks_test()
+            if self.presenter.ks_test.passed:
+                self.ks_tab.status.setText("Estado de la prueba: Passed")
+            else:
+                self.ks_tab.status.setText("Estado de la prueba: Failed")
+            self.ks_tab.mean.setText(f"Promedio de los datos: {self.presenter.ks_test.average}")
+            self.ks_tab.d_max.setText(f"Valor del D_max: {self.presenter.ks_test.d_max}")
+            self.ks_tab.d_max_p.setText(f"Valor del d_max_p: {self.presenter.ks_test.d_max_p}")
+            self.ks_tab.n.setText(f"Numero de intervalos: {self.presenter.ks_test.n_intervals}")
+    
+    def showKsTestG(self):
+        self.presenter.ks_test.plotDs()
+    
+    def showKsTestG2(self):
+        self.presenter.ks_test.plotIntervals()
 
 #poker tab Class
 class PokerTab(QWidget):
@@ -183,20 +205,40 @@ class VarianceTab(QWidget):
         
 #Ks tab Class
 class KsTab(QWidget):
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window
         self.initUI()
 
     def initUI(self):
         label = QLabel("PRUEBA Kolmogorov-Smirnov")
-        intervals = QLabel("Intervalos:")
-        intervalsName = QLineEdit()
+        self.status = QLabel("Estado de la prueba: ")
+        self.mean = QLabel("Promedio de los datos:")
+        self.d_max = QLabel("Valor del D_max:")
+        self.d_max_p = QLabel("Valor del d_max_p: ")
+        self.test = QPushButton("Hacer Prueba")
+        self.n = QLabel("Numero de intervalos:")
+        self.g = QPushButton("Ver Grafica d_max y d_max_p")
+        self.g2 = QPushButton("Ver Grafica do todos los Intervalos")
+        self.test.clicked.connect(self.main_window.doKsTest)
+        self.g.clicked.connect(self.main_window.showKsTestG)
+        self.g2.clicked.connect(self.main_window.showKsTestG2)
+        self.intervals = QLabel("Insertar Intervalos:")
+        self.intervalsNum = QLineEdit()
         double_validator = QDoubleValidator()
-        intervalsName.setValidator(double_validator)
+        self.intervalsNum.setValidator(double_validator)
         layout = QVBoxLayout()
         layout.addWidget(label)
-        layout.addWidget(intervals)
-        layout.addWidget(intervalsName)
+        layout.addWidget(self.intervals)
+        layout.addWidget(self.intervalsNum)
+        layout.addWidget(self.n)
+        layout.addWidget(self.status)
+        layout.addWidget(self.mean)
+        layout.addWidget(self.d_max)
+        layout.addWidget(self.d_max_p)
+        layout.addWidget(self.test)
+        layout.addWidget(self.g)
+        layout.addWidget(self.g2)
         self.setLayout(layout)
 
 #Chi2 tab Class

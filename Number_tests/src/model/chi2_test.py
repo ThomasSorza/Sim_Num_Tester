@@ -98,8 +98,8 @@ if __name__ == '__main__':
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~ Table ~~~~~~~~~~~~~~~~~~~~~~~~~~")
     for i in range(len(udm.intervals_values) - 1):
         print(str(udm.intervals_values[i]) + " --- " + str(udm.intervals_values[i + 1]) + " --- " +
-              str(udm.frequency_obtained[i]) + " --- " + str(udm.expected_frequency[i])
-              + " --- " + str(udm.chi_squared_values[i]))
+            str(udm.frequency_obtained[i]) + " --- " + str(udm.expected_frequency[i])
+            + " --- " + str(udm.chi_squared_values[i]))
 
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~ Totals ~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("Cumulative Frequency Obtained -> " + str(udm.cumulativeObtainedFrequency()))

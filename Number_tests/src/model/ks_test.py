@@ -101,25 +101,26 @@ class KsTest:
                     break  # No es necesario seguir buscando en otros intervalos
 
         return self.oi
-        
     
     def calculate_intervals(self):
-        n_intervals = self.n_intervals
-        interval_size = (self.max - self.min) / n_intervals
-        initial = self.min
-        for _ in range(n_intervals):
-            new_interval = (initial, initial + interval_size)
-            self.intervals.append(new_interval)
-            initial = new_interval[1]
+        if self.n != 0:
+            n_intervals = self.n_intervals
+            interval_size = (self.max - self.min) / n_intervals
+            initial = self.min
+            for _ in range(n_intervals):
+                new_interval = (initial, initial + interval_size)
+                self.intervals.append(new_interval)
+                initial = new_interval[1]
             
     def plotDs(self):
-        x = ["D max (calculated)", "Dmax p (KS -> Table)"]
+        x = ["D max (error calculado)", "Dmax p (valor KS maximo -> Tabla)"]
         y = [self.d_max, self.d_max_p]
 
         fig, ax = plt.subplots()
         bars = plt.bar(x, y, color=['red', 'blue'])
-        plt.title('D max and Dmax p comparison')
+        plt.title('Tabla comparacion D max y Dmax p (Error y error maximo)')
         plt.ylabel('Values')
+        plt.xlabel('Errores')
 
         # Agregar etiquetas de valor en las barras
         for bar, value in zip(bars, y):
@@ -128,27 +129,64 @@ class KsTest:
         plt.show()
 
     def plotIntervals(self):
-        #TODO:plot all intervals
-        pass
+        # Create a list to store interval labels
+        interval_labels = []
+        
+        # Create lists to store observed and expected frequencies
+        observed_frequencies = []
+        expected_frequencies = []
+
+        for i, interval in enumerate(self.intervals):
+            # Define the label for the interval
+            label = f"Interval {i + 1}: [{interval[0]:.3f}, {interval[1]:.3f})"
+            interval_labels.append(label)
+
+            # Append observed and expected frequencies to their respective lists
+            observed_frequencies.append(self.prob_esp[i])
+            expected_frequencies.append(self.prob_oi[i])
+
+        # Create an array of x positions for the bars
+        x = np.arange(len(interval_labels))
+
+        # Create a bar chart
+        width = 0.35  # Width of the bars
+        fig, ax = plt.subplots()
+        observed_bars = ax.bar(x - width / 2, observed_frequencies, width, label='Probabilidad Frecuencia Obtenida')
+        expected_bars = ax.bar(x + width / 2, expected_frequencies, width, label='Probabilidad Frecuencia Esperada')
+
+        # Add labels, title, and legend
+        ax.set_xlabel('Intervalos')
+        ax.set_ylabel('Frequencias')
+        ax.set_title('Frecuencias Probabilidad Obtenida y Probabilidad Esperada')
+        ax.set_xticks(x)
+        ax.set_xticklabels(interval_labels, rotation=45, ha='right')
+        ax.legend()
+        plt.tight_layout()
+        plt.show()
+
             
 def main():
     ks_test = KsTest([
-    0.991508, 0.790864, 0.603322, 0.913592, 0.63023,
-    0.976403, 0.522136, 0.295652, 0.960994, 0.903749,
-    0.762234, 0.906482, 0.612438, 0.633764, 0.825681,
-    0.021075, 0.018624, 0.924127, 0.861208, 0.861556,
-    0.41393, 0.551733, 0.80481, 0.042195, 0.64914,
-    0.349604, 0.095385, 0.267151, 0.435061, 0.901198,
-    0.820168, 0.555224, 0.861995, 0.965973, 0.735315,
-    0.858775, 0.379762, 0.508588, 0.907571, 0.038967,
-    0.211966, 0.212726, 0.777375, 0.803119, 0.900774,
-    0.821933, 0.619674, 0.893804, 0.109495, 0.033824
+    0.442222, 0.998804, 0.71769, 0.269853, 0.568477,
+    0.36, 0.411249, 0.778008, 0.009591, 0.912916,
+    0.779474, 0.31009, 0.91997, 0.080992, 0.232559,
+    0.609389, 0.053358, 0.851224, 0.778083, 0.652102,
+    0.978415, 0.219255, 0.865409, 0.610148, 0.378051,
+    0.711247, 0.569673, 0.159811, 0.523811, 0.903988,
+    0.495915, 0.050326, 0.260573, 0.009727, 0.759171,
+    0.842146, 0.702157, 0.697722, 0.661416, 0.998833,
+    0.282094, 0.366486, 0.205575, 0.798332, 0.279457,
+    0.332125, 0.422582, 0.105727, 0.537386, 0.091692
 ])
     ks_test.checkTest()
     print(ks_test.d_max)
     print(ks_test.d_max_p)
     print(ks_test.passed)
+    print(ks_test.intervals)
+    print(ks_test.oi)
+    print(ks_test.prob_oi)
     ks_test.plotDs()
+    ks_test.plotIntervals()
 
 if __name__ == "__main__":
     main()
