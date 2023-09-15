@@ -164,6 +164,51 @@ class KsTest:
         plt.tight_layout()
         plt.show()
 
+    def plotIntervalsFreq(self):
+        # Create a list to store interval labels
+        interval_labels = []
+
+        # Create lists to store observed and expected frequencies
+        observed_frequencies = []
+
+        for i, interval in enumerate(self.intervals):
+            # Define the label for the interval
+            label = f"Interval {i + 1}: [{interval[0]:.3f}, {interval[1]:.3f})"
+            interval_labels.append(label)
+
+            # Append observed frequencies to the list
+            observed_frequencies.append(self.oi[i])
+
+        # Create an array of x positions for the bars
+        x = np.arange(len(interval_labels))
+
+        # Create a bar chart
+        width = 0.35  # Width of the bars
+        fig, ax = plt.subplots()
+        # Add labels, title, and legend
+        ax.set_xlabel('Intervalos')
+        ax.set_ylabel('Frequencia de numeros en cada intervalo')
+        ax.set_title('Frecuencias de numeros Obtenida para cada intervalo')
+        ax.set_xticks(x)
+        ax.set_xticklabels(interval_labels, rotation=45, ha='right')
+
+        # Plot the observed frequencies as bars
+        bars = ax.bar(x, observed_frequencies, width, label='Frecuencia Observada')
+
+        # Add values on top of the bars
+        for bar, oi in zip(bars, observed_frequencies):
+            height = bar.get_height()
+            ax.annotate(f'{oi}',
+                        xy=(bar.get_x() + bar.get_width() / 2, height),
+                        xytext=(0, 3),  # 3 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom')
+
+        ax.legend()
+        plt.tight_layout()
+        plt.show()
+
+
             
 def main():
     ks_test = KsTest([
@@ -187,6 +232,7 @@ def main():
     print(ks_test.prob_oi)
     ks_test.plotDs()
     ks_test.plotIntervals()
+    ks_test.plotIntervalsFreq()
 
 if __name__ == "__main__":
     main()

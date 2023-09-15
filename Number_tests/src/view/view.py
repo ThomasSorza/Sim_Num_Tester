@@ -119,6 +119,9 @@ class MainWindow(QMainWindow):
     
     def showKsTestG2(self):
         self.presenter.ks_test.plotIntervals()
+    
+    def showKsTestG3(self):
+        self.presenter.ks_test.plotIntervalsFreq()
 
 #poker tab Class
 class PokerTab(QWidget):
@@ -219,10 +222,12 @@ class KsTab(QWidget):
         self.test = QPushButton("Hacer Prueba")
         self.n = QLabel("Numero de intervalos:")
         self.g = QPushButton("Ver Grafica d_max y d_max_p")
-        self.g2 = QPushButton("Ver Grafica do todos los Intervalos")
+        self.g2 = QPushButton("Ver Grafica de probabilidad de todos los Intervalos")
+        self.g3 = QPushButton("Ver Grafica frucuencia de los intervalos")
         self.test.clicked.connect(self.main_window.doKsTest)
         self.g.clicked.connect(self.main_window.showKsTestG)
         self.g2.clicked.connect(self.main_window.showKsTestG2)
+        self.g3.clicked.connect(self.main_window.showKsTestG3)
         self.intervals = QLabel("Insertar Intervalos:")
         self.intervalsNum = QLineEdit()
         double_validator = QDoubleValidator()
@@ -237,6 +242,7 @@ class KsTab(QWidget):
         layout.addWidget(self.d_max)
         layout.addWidget(self.d_max_p)
         layout.addWidget(self.test)
+        layout.addWidget(self.g3)
         layout.addWidget(self.g)
         layout.addWidget(self.g2)
         self.setLayout(layout)
