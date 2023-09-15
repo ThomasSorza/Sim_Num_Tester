@@ -1,13 +1,12 @@
 from statistics import mean
 from math import sqrt
-from typing import Any
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 
 class AverageTest:
     def __init__(self, ri_nums):
         self.ri_nums = ri_nums
-        self._average = None
+        self.average = 0
         self.alpha = 0.05
         self.acceptation = 0.95
         self.passed = False
@@ -16,70 +15,12 @@ class AverageTest:
         self.superior_limit = 0.0
         self.inferior_limit = 0.0
 
-    @property
-    def average(self):
-        if self._average is None:
-            self._average = mean(self.ri_nums)
-        return self._average
-
-    @property
-    def alpha(self):
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, value):
-        self._alpha = value
-
-    @property
-    def acceptation(self):
-        return self._acceptation
-
-    @acceptation.setter
-    def acceptation(self, value):
-        self._acceptation = value
-
-    @property
-    def passed(self):
-        return self._passed
-
-    @passed.setter
-    def passed(self, value):
-        self._passed = value
-
-    @property
-    def n(self):
-        return self._n
-
-    @n.setter
-    def n(self, value):
-        self._n = value
-
-    @property
-    def z(self):
-        return self._z
-
-    @z.setter
-    def z(self, value):
-        self._z = value
-
-    @property
-    def superior_limit(self):
-        return self._superior_limit
-
-    @superior_limit.setter
-    def superior_limit(self, value):
-        self._superior_limit = value
-
-    @property
-    def inferior_limit(self):
-        return self._inferior_limit
-
-    @inferior_limit.setter
-    def inferior_limit(self, value):
-        self._inferior_limit = value
+    def calcAverage(self):
+        if self.n != 0:
+            self.average = mean(self.ri_nums)
 
     def calculateZ(self): # Z value must be between inferior and superior limit to pass the test
-        self.z = norm.ppf(1 - (self._alpha / 2))
+        self.z = norm.ppf(1 - (self.alpha / 2))
 
     def calculateSuperiorLimit(self):
         if self.n > 0:
@@ -89,13 +30,25 @@ class AverageTest:
         if self.n > 0:
             self.inferior_limit = (1/2) - (self.z * (1 / sqrt(12 * self.n)))
     
+    def checkTest(self):
+        self.calcAverage()
+        self.calculateZ()
+        self.calculateSuperiorLimit()
+        self.calculateInferiorLimit()
+        if self.inferior_limit <= self.average <= self.superior_limit:
+            self.passed = True
+        else:
+            self.passed = False
+    
     def checkIfPassed(self): #check if the test is passed
         if self.inferior_limit <= self.average <= self.superior_limit:
             self.passed = True
+        else:
+            self.passed = False
         return self.passed
     
     def clear(self):
-        self._average = None
+        self.average = 0
         self.alpha = 0.05
         self.acceptation = 0.95
         self.passed = False
@@ -121,13 +74,14 @@ class AverageTest:
 
 def main():
     ri_nums = [
-    0.94675, 0.14613, 0.03714, 0.02564, 0.59248, 0.97007, 0.88408, 0.98356, 0.88531, 0.20903,
-    0.3646, 0.81139, 0.8297, 0.92341, 0.04724, 0.08755, 0.38528, 0.88296, 0.81756, 0.76944,
-    0.45764, 0.17826, 0.03607, 0.92684, 0.82088, 0.60626, 0.34297, 0.48714, 0.60858, 0.09187,
-    0.64766, 0.09686, 0.60099, 0.94386, 0.63456, 0.06797, 0.78311, 0.18581, 0.06715, 0.64841,
-    0.55189, 0.55124, 0.27866, 0.53248, 0.51003, 0.98711, 0.50026, 0.6103, 0, 0.67105, 0.09698
+    0.79817, 0.68468, 0.58381,
+    0.11612, 0.32584, 0.15024,
+    0.28316, 0.61384, 0.44471,
+    0.90924, 0.39663, 0.12679,
+    0.19981, 0.08535, 0.05599
     ]
     test = AverageTest(ri_nums)
+    test.calcAverage()
     test.calculateZ()
     test.calculateSuperiorLimit()
     test.calculateInferiorLimit()
