@@ -97,7 +97,7 @@ class AverageTest:
 
         fig, ax = plt.subplots()
         bars = plt.bar(x, y, color=['red', 'blue', 'green'])
-        plt.title('Comparación de Límite Inferior, Promedio y Límite Superior')
+        plt.title('Comparación de Límite Inferior, Promedio (Media) y Límite Superior')
         plt.xlabel('Categoría')
         plt.ylabel('Valor')
 

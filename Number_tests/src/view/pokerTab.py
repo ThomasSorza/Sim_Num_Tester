@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton
-from PyQt6.QtGui import QDoubleValidator
+from PyQt6.QtGui import QDoubleValidator, QFont
 
 #poker tab Class
 class PokerTab(QWidget):
@@ -9,8 +9,21 @@ class PokerTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("PRUEBA DE POKER\n\nDescripcion de las manos:\n (D) Todos Diferentes\n (O) Un par \n (T) Dos pares \n (K) Tercia \n (F) Tercia y Par (Full house) \n (P )Cuatro del mismo valor (poker)\n (Q) Quintilla") 
+        label_text = "PRUEBA DE POKER\n\nDescripcion de las manos:\n (D) Todos Diferentes\n (O) Un par \n (T) Dos pares \n (K) Tercia \n (F) Tercia y Par (Full house) \n (P )Cuatro del mismo valor (poker)\n (Q) Quintilla"
+        label = QLabel(label_text)
+
+        # Crear una fuente en negrita
+        font = QFont()
+        font.setBold(True)
+        label.setFont(font)
+
         self.status = QLabel("Estado de la prueba:")
+        
+        # Crear una fuente en negrita
+        font_status = QFont()
+        font_status.setBold(True)
+        self.status.setFont(font_status)
+
         self.sum_val = QLabel("Valor de la sumatoria: ")
         self.chi_val = QLabel("Valor de la prueba chi inversa: ")
         self.test = QPushButton("Hacer Prueba")

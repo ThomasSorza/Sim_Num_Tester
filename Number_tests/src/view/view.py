@@ -151,6 +151,8 @@ class MainWindow(QMainWindow):
             elif numIntervals != "" and a == "" and b != "":
                 self.showErrorMessage("Error", "Falta el valor de a.")
                 return#do not continue with the function
+            elif numIntervals != "" and a == "" and b == "":
+                self.presenter.chi2_test = ChiTest(self.presenter.ri_numbers, int(numIntervals))
             else :
                 self.presenter.chi2_test = ChiTest(self.presenter.ri_numbers)
             self.presenter.do_chi2_test()
@@ -161,7 +163,8 @@ class MainWindow(QMainWindow):
             self.chi_tab.ni_min.setText(f"Valor Ni Maximo: {str(self.presenter.chi2_test.niMax)}")
             self.chi_tab.ni_max.setText(f"Valor Ni Minimo: {str(self.presenter.chi2_test.niMin)}")
             self.chi_tab.n.setText(f"Numero de intervalos: {self.presenter.chi2_test.intervals_amount}")
-
+            self.chi_tab.sum_chi2.setText(f"Valor de la sumatoria de Chi2: {self.presenter.chi2_test.sumChi2}")
+            self.chi_tab.chi_test.setText(f"Valor de la prueba Chi2 inversa: {self.presenter.chi2_test.chiReverse}")
     
     def showChi2TestG(self):
         self.presenter.chi2_test.plotChi2()

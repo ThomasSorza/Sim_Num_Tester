@@ -29,6 +29,8 @@ class ChiTest:
         self.frequency_obtained = []
         self.expected_frequency = []
         self.chi_squared_values = []
+        self.chiReverse = 0
+        self.sumChi2 = 0
         self.passed = False
 
     def fillNiValues(self):
@@ -146,6 +148,8 @@ class ChiTest:
         self.fillIntervalsValuesArray()
         self.fillFrequenciesArrays()
         self.fillChiSquaredValuesArray()
+        self.chiReverse = self.chi_squared_test_value()
+        self.sumChi2 = self.cumulativeChiSquaredValues()
         if self.cumulativeChiSquaredValues() <= self.chi_squared_test_value():
             self.passed = True
         else:

@@ -1,8 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton
-from PyQt6.QtGui import QDoubleValidator
+from PyQt6.QtGui import QDoubleValidator, QFont
 
-
-#means tab Class
+# Means tab Class
 class MeansTab(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -10,11 +9,25 @@ class MeansTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("PRUEBA DE MEDIAS") 
-        self.status = QLabel("Estado de la prueba: ")
+        label_text = "PRUEBA DE MEDIAS"
+        label = QLabel(label_text)
+
+        # Crear una fuente en negrita
+        font = QFont()
+        font.setBold(True)
+        label.setFont(font)
+
+        self.status = QLabel("Estado de la prueba:")
+        
+        # Crear una fuente en negrita
+        font_status = QFont()
+        font_status.setBold(True)
+        self.status.setFont(font_status)
+
         self.ls = QLabel("Valor Limite Superior:")
         self.mean = QLabel("Valor Media:")
         self.li = QLabel("Valor Limite Inferior: ")
+
         # Create two buttons
         self.test = QPushButton("Hacer Prueba")
         self.g = QPushButton("Ver Limites y media")

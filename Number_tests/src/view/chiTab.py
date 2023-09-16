@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton
 from PyQt6.QtGui import QDoubleValidator
+from PyQt6.QtGui import QFont
 
 class ChiTab(QWidget):
     def __init__(self, main_window):
@@ -9,11 +10,13 @@ class ChiTab(QWidget):
 
     def initUI(self):
         label = QLabel("PRUEBA CHI-CUADRADO")
-        self.status = QLabel("Estado de la prueba: ")
+        font = QFont()
+        font.setBold(True)
+        self.status = QLabel("Estado de la prueba:")
         self.ni_min = QLabel("Valor Ni Maximo:")
         self.ni_max = QLabel("Valor Ni Minimo: ")
         self.test = QPushButton("Hacer Prueba")
-        self.n = QLabel("Numero de intervalos por defecto 8:")
+        self.n = QLabel("Numero de intervalos:")
         self.g = QPushButton("Ver Grafica Suma Chi2 y Chi2Inversa calculada")
         self.g2 = QPushButton("Ver Grafica frecuencia de los intervalos")
         self.test.clicked.connect(self.main_window.doChi2Test)
@@ -28,10 +31,13 @@ class ChiTab(QWidget):
         self.a_input.setValidator(double_validator)
         self.b_input.setValidator(double_validator)
         
-        self.intervals = QLabel("Insertar Intervalos:")
+        self.intervals = QLabel("Insertar Intervalos por defecto 8:")
         self.intervalsNum = QLineEdit()
         self.intervalsNum.setValidator(double_validator)
-
+        self.sum_chi2 = QLabel("Valor de la sumatoria de Chi2: ")
+        self.chi_test = QLabel("Valor de la prueba Chi2 inversa: ")
+        label.setFont(font)
+        self.status.setFont(font)
         layout = QVBoxLayout()
         layout.addWidget(label)
         layout.addWidget(self.intervals)
@@ -44,6 +50,8 @@ class ChiTab(QWidget):
         layout.addWidget(self.status)
         layout.addWidget(self.ni_max)
         layout.addWidget(self.ni_min)
+        layout.addWidget(self.sum_chi2)
+        layout.addWidget(self.chi_test)
         layout.addWidget(self.test)
         layout.addWidget(self.g)
         layout.addWidget(self.g2)

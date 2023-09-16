@@ -1,8 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton
-from PyQt6.QtGui import QDoubleValidator
+from PyQt6.QtGui import QDoubleValidator, QFont
 
-
-#variance tab Class
+# Variance tab Class
 class VarianceTab(QWidget):
     def __init__(self, main_window):
         super().__init__()
@@ -10,8 +9,21 @@ class VarianceTab(QWidget):
         self.initUI()
 
     def initUI(self):
-        label = QLabel("PRUEBA DE VARIANZAS") 
-        self.status = QLabel("Estado de la prueba: ")
+        label_text = "PRUEBA DE VARIANZAS"
+        label = QLabel(label_text)
+
+        # Crear una fuente en negrita
+        font = QFont()
+        font.setBold(True)
+        label.setFont(font)
+
+        self.status = QLabel("Estado de la prueba:")
+
+        # Crear una fuente en negrita
+        font_status = QFont()
+        font_status.setBold(True)
+        self.status.setFont(font_status)
+
         self.ls = QLabel("Valor Limite Superior:")
         self.variance = QLabel("Valor Varianza:")
         self.li = QLabel("Valor Limite Inferior: ")
@@ -20,7 +32,7 @@ class VarianceTab(QWidget):
         self.test.clicked.connect(self.main_window.doVarianceTest)
         self.g.clicked.connect(self.main_window.showVarianceTestG)
         layout = QVBoxLayout()
-        layout.addWidget(label) #prueba de medias
+        layout.addWidget(label)  # prueba de varianzas
         layout.addWidget(self.status)
         layout.addWidget(self.ls)
         layout.addWidget(self.variance)

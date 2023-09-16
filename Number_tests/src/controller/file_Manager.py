@@ -27,7 +27,6 @@ class FileManager:
                     lista_de_strings.append(line)
                 # Usando Decimal para mayor precisión y evitar errores con notación 'c'
                 self.numbers = [float(s) for s in lista_de_strings]
-                print(self.numbers)
         except FileNotFoundError:
             print("El archivo de entrada no existe.")
         except Exception as e:
