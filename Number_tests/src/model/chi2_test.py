@@ -2,8 +2,21 @@ from typing import Any
 from scipy.stats import chi2
 import numpy as np
 import matplotlib.pyplot as plt
+
 class ChiTest:
-    def __init__(self, ri_values =[], intervals_amount = 8, a=8, b=10):
+    """
+    Clase que implementa la Prueba de Chi-Cuadrado para una secuencia de números generados.
+    """
+
+    def __init__(self, ri_values=[], intervals_amount=8, a=8, b=10):
+        """
+        Inicializa una instancia de ChiTest.
+
+        :param ri_values: Lista de números generados.
+        :param intervals_amount: Cantidad de intervalos para la prueba.
+        :param a: Parámetro 'a' utilizado en el cálculo de 'ni'.
+        :param b: Parámetro 'b' utilizado en el cálculo de 'ni'.
+        """
         self.ri_values = ri_values
         self.ni_values = []
         self.a = a
@@ -16,25 +29,46 @@ class ChiTest:
         self.frequency_obtained = []
         self.expected_frequency = []
         self.chi_squared_values = []
+        self.chiReverse = 0
+        self.sumChi2 = 0
         self.passed = False
 
     def fillNiValues(self):
+        """
+        Calcula y llena la lista 'ni_values' con los valores 'ni'.
+        """
         for i in range(self.num_amount):
             value = self.a + (self.b - self.a) * self.ri_values[i]
             self.ni_values.append(value)
 
     def sortNiArray(self):
+        """
+        Ordena la lista 'ni_values'.
+        """
         self.ni_values.sort()
 
     def obtainMinNiValue(self):
+        """
+        Obtiene el valor mínimo de 'ni_values'.
+
+        :return: El valor mínimo de 'ni_values'.
+        """
         self.niMin = min(self.ni_values)
         return min(self.ni_values)
 
     def obtainMaxNiValue(self):
+        """
+        Obtiene el valor máximo de 'ni_values'.
+
+        :return: El valor máximo de 'ni_values'.
+        """
         self.niMax = max(self.ni_values)
         return max(self.ni_values)
 
     def fillIntervalsValuesArray(self):
+        """
+        Llena la lista 'intervals_values' con los valores de los intervalos.
+        """
         min_value = self.obtainMinNiValue()
         max_value = self.obtainMaxNiValue()
         self.intervals_values.append(min_value)
@@ -44,6 +78,9 @@ class ChiTest:
             self.intervals_values.append(value)
 
     def fillFrequenciesArrays(self):
+        """
+        Llena las listas 'frequency_obtained' y 'expected_frequency' con las frecuencias observadas y esperadas respectivamente.
+        """
         expected_freq = round(float(len(self.ni_values)) / self.intervals_amount, 2)
         counter = 0
 
@@ -56,23 +93,46 @@ class ChiTest:
             counter = 0
 
     def fillChiSquaredValuesArray(self):
+        """
+        Llena la lista 'chi_squared_values' con los valores calculados de Chi-Cuadrado.
+        """
         for i in range(len(self.frequency_obtained)):
             value = round(((self.frequency_obtained[i] - self.expected_frequency[i]) ** 2) / self.expected_frequency[i], 2)
             self.chi_squared_values.append(value)
 
     def cumulativeObtainedFrequency(self):
+        """
+        Calcula la frecuencia acumulada de los valores observados.
+
+        :return: La frecuencia acumulada de los valores observados.
+        """
         result = sum(self.frequency_obtained)
         return result
 
     def cumulativeExpectedFrequency(self):
+        """
+        Calcula la frecuencia acumulada de los valores esperados.
+
+        :return: La frecuencia acumulada de los valores esperados.
+        """
         result = sum(self.expected_frequency)
         return result
 
     def cumulativeChiSquaredValues(self):
+        """
+        Calcula la sumatoria de los valores de Chi-Cuadrado.
+
+        :return: La sumatoria de los valores de Chi-Cuadrado.
+        """
         result = sum(self.chi_squared_values)
         return result
 
     def chi_squared_test_value(self):
+        """
+        Calcula el valor crítico de Chi-Cuadrado para la prueba.
+
+        :return: El valor crítico de Chi-Cuadrado.
+        """
         margin_of_error = 0.05
         degrees_of_freedom = self.intervals_amount - 1
 
@@ -80,24 +140,32 @@ class ChiTest:
         return chiSquared.ppf(1.0 - margin_of_error)
 
     def checkTest(self):
+        """
+        Realiza la prueba de Chi-Cuadrado y establece si ha sido superada.
+        """
         self.fillNiValues()
         self.sortNiArray()
         self.fillIntervalsValuesArray()
         self.fillFrequenciesArrays()
         self.fillChiSquaredValuesArray()
+        self.chiReverse = self.chi_squared_test_value()
+        self.sumChi2 = self.cumulativeChiSquaredValues()
         if self.cumulativeChiSquaredValues() <= self.chi_squared_test_value():
             self.passed = True
         else:
             self.passed = False
             
     def plotChi2(self):
-        x = ["Sumatoria de Valores Chi2", "Valor de la prueba Chi2Inversa"]
+        """
+        Genera un gráfico que muestra los valores de Chi-Cuadrado calculados y el valor crítico de Chi-Cuadrado.
+        """
+        x = ["Sumatoria de Valores Chi2", "Valor de la prueba Chi2 Inversa"]
         y = [self.cumulativeChiSquaredValues(), self.chi_squared_test_value()]
 
         fig, ax = plt.subplots()
         bars = plt.bar(x, y, color=['yellow', 'red'])
-        plt.title('Tabla comparacion Chi2 margen de error calculado y Chi2Inversa')
-        plt.ylabel('Values')
+        plt.title('Comparación de Sumatoria de Valores Chi2 y Valor de la prueba Chi2 Inversa')
+        plt.ylabel('Valores')
         plt.xlabel('Valores de Chi2')
 
         # Agregar etiquetas de valor en las barras
@@ -107,6 +175,9 @@ class ChiTest:
         plt.show()
         
     def plotFrequencies(self):
+        """
+        Genera un gráfico que muestra las frecuencias observadas y esperadas en cada intervalo.
+        """
         # Crear un rango de valores para el eje x (los intervalos)
         x = np.arange(len(self.intervals_values) - 1)
 
@@ -136,31 +207,3 @@ class ChiTest:
 
         plt.tight_layout()
         plt.show()
-
-if __name__ == '__main__':
-    udm = ChiTest([
-    0.96383,
-    0.71968,
-    0.49937,
-    0.39344,
-    0.83499,
-    0.72372,
-    0.46416,
-    0.89852,
-    0.31497,
-    0.34828,
-    0.11213,
-    0.67328,
-    0.87569,
-    0.72191,
-    0.17735
-    ],8, 10, 8)
-    
-    udm.checkTest()
-    print(udm.chi_squared_values)
-    print(udm.intervals_values)
-    print(udm.frequency_obtained)
-    print(udm.passed)
-    udm.plotChi2()
-    udm.plotFrequencies()
-    

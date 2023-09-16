@@ -1,33 +1,76 @@
 import sys
-from PyQt6.QtWidgets import QMainWindow, QTabWidget,QMessageBox, QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QMainWindow, QTabWidget, QMessageBox, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog
 from PyQt6.QtGui import QDoubleValidator
-
+from .chiTab import ChiTab  # Importa la clase ChiTab desde chiTab.py
+from .ksTab import KsTab  # Importa la clase KsTab desde ksTab.py
+from .varTab import VarianceTab  # Importa la clase VarianceTab desde varTab.py
+from .meansTab import MeansTab  # Importa la clase MeansTab desde meansTab.py
+from .pokerTab import PokerTab  # Importa la clase PokerTab desde pokerTab.py
 from controller.presenter import Presenter
 from model.poker_test import PokerTest
 from model.average_test import AverageTest
 from model.variance_test import VarianceTest
 from model.ks_test import KsTest
 from model.chi2_test import ChiTest
+
 class MainWindow(QMainWindow):
+    """
+    Clase para la ventana principal de la aplicación.
+
+    Esta clase crea la ventana principal de la aplicación y gestiona las pestañas y eventos relacionados con las pruebas estadísticas.
+
+    Args:
+        presenter (Presenter): Una instancia del presentador que gestiona la lógica de la aplicación.
+
+    Attributes:
+        poker_tab (PokerTab): La pestaña para la prueba de Poker.
+        means_tab (MeansTab): La pestaña para la prueba de medias.
+        variance_tab (VarianceTab): La pestaña para la prueba de varianzas.
+        ks_tab (KsTab): La pestaña para la prueba de Kolmogorov-Smirnov.
+        chi_tab (ChiTab): La pestaña para la prueba de chi-cuadrado.
+
+    Methods:
+        initUI(): Inicializa la interfaz de usuario y los elementos relacionados con las pestañas y botones.
+        loadFile(): Abre un cuadro de diálogo para cargar un archivo de datos.
+        showErrorMessage(title, message): Muestra un cuadro de mensaje de error.
+        doPokerTest(): Realiza la prueba de Poker con los datos cargados.
+        showGraph1Poker(): Muestra la gráfica de sumatoria vs. chi inversa para la prueba de Poker.
+        showGraph2Poker(): Muestra la gráfica de frecuencia observada vs. frecuencia esperada para la prueba de Poker.
+        doAverageTest(): Realiza la prueba de medias con los datos cargados.
+        showAverageTestG(): Muestra la gráfica de límites y media para la prueba de medias.
+        doVarianceTest(): Realiza la prueba de varianzas con los datos cargados.
+        showVarianceTestG(): Muestra la gráfica de límites y varianza para la prueba de varianzas.
+        doKsTest(): Realiza la prueba de Kolmogorov-Smirnov con los datos cargados.
+        showKsTestG(): Muestra la gráfica de D_max para la prueba de Kolmogorov-Smirnov.
+        showKsTestG2(): Muestra la gráfica de probabilidad de los intervalos para la prueba de Kolmogorov-Smirnov.
+        showKsTestG3(): Muestra la gráfica de frecuencia de los intervalos para la prueba de Kolmogorov-Smirnov.
+        doChi2Test(): Realiza la prueba de chi-cuadrado con los datos cargados.
+        showChi2TestG(): Muestra la gráfica de valores Chi2 calculados.
+        showChi2TestG2(): Muestra la gráfica de frecuencias observadas para la prueba de chi-cuadrado.
+    """
+
     def __init__(self, presenter):
         super().__init__()
         self.initUI()
         self.presenter = presenter
 
     def initUI(self):
+        """
+        Inicializa la interfaz de usuario y los elementos relacionados con las pestañas y botones.
+        """
         self.setWindowTitle("Number tests")
-        self.setGeometry(100, 100, 500, 400) 
+        self.setGeometry(100, 100, 500, 400)
         tab_widget = QTabWidget()
-        self.poker_tab = PokerTab(self)  # Pass a reference to the MainWindow
+        self.poker_tab = PokerTab(self)  # Pasar una referencia a la MainWindow
         self.means_tab = MeansTab(self)
         self.variance_tab = VarianceTab(self)
         self.ks_tab = KsTab(self)
         self.chi_tab = ChiTab(self)
-        tab_widget.addTab(self.poker_tab, "Poker Test")
         tab_widget.addTab(self.means_tab, "Means Test")
         tab_widget.addTab(self.variance_tab, "Variance Test")
-        tab_widget.addTab(self.ks_tab, "K-S Test")
         tab_widget.addTab(self.chi_tab, "Chi2 Test")
+        tab_widget.addTab(self.ks_tab, "K-S Test")
+        tab_widget.addTab(self.poker_tab, "Poker Test")
         vbox = QVBoxLayout()
         vbox.addWidget(tab_widget)
         self.load_button = QPushButton("Load File", self)
@@ -40,23 +83,36 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
     def loadFile(self):
+        """
+        Abre un cuadro de diálogo para cargar un archivo de datos.
+        """
         file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Archivos de Texto (*.txt);;Todos los Archivos (*)")
         if file_name:
             self.presenter.file_manager.input_file_path = file_name
             self.presenter.file_manager.storage_numbers()
             self.presenter.add_numbers()
             self.status_label.setText(f"File Selected: {file_name}")
-    
+
     def showErrorMessage(self, title, message):
+        """
+        Muestra un cuadro de mensaje de error.
+
+        Args:
+            title (str): El título del mensaje de error.
+            message (str): El contenido del mensaje de error.
+        """
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Icon.Critical)
         msg_box.setWindowTitle(title)
         msg_box.setText(message)
         msg_box.exec()
-        
-    #poker test events
+
+    # Eventos de prueba de Poker
     def doPokerTest(self):
-        if (len(self.presenter.ri_numbers) != 0):
+        """
+        Realiza la prueba de Poker con los datos cargados.
+        """
+        if len(self.presenter.ri_numbers) != 0:
             pokertest = PokerTest(self.presenter.ri_numbers)
             self.presenter.poker_test = pokertest
             self.presenter.do_poker_test()
@@ -68,14 +124,23 @@ class MainWindow(QMainWindow):
             self.poker_tab.chi_val.setText(f"Valor de la prueba chi inversa: {self.presenter.poker_test.chi_reverse}")
 
     def showGraph1Poker(self):
+        """
+        Muestra la gráfica de sumatoria vs. chi inversa para la prueba de Poker.
+        """
         self.presenter.poker_test.plot_totalSum_vs_chiReverse()
-        
+
     def showGraph2Poker(self):
+        """
+        Muestra la gráfica de frecuencia observada vs. frecuencia esperada para la prueba de Poker.
+        """
         self.presenter.poker_test.plot_oi_vs_ei()
-    
-    #means test events
+
+    # Eventos de prueba de medias
     def doAverageTest(self):
-        if (len(self.presenter.ri_numbers) != 0):
+        """
+        Realiza la prueba de medias con los datos cargados.
+        """
+        if len(self.presenter.ri_numbers) != 0:
             test = AverageTest(self.presenter.ri_numbers)
             self.presenter.average_test = test
             self.presenter.do_average_test()
@@ -86,13 +151,19 @@ class MainWindow(QMainWindow):
             self.means_tab.ls.setText(f"Valor Limite Superior: {self.presenter.average_test.superior_limit}")
             self.means_tab.mean.setText(f"Valor Media: {self.presenter.average_test.average}")
             self.means_tab.li.setText(f"Valor Limite Inferior: {self.presenter.average_test.inferior_limit}")
-        
+
     def showAverageTestG(self):
+        """
+        Muestra la gráfica de límites y media para la prueba de medias.
+        """
         self.presenter.average_test.plotLimitsAndAverage()
-        
-    #variance test events
+
+    # Eventos de prueba de varianzas
     def doVarianceTest(self):
-        if (len(self.presenter.ri_numbers) != 0):
+        """
+        Realiza la prueba de varianzas con los datos cargados.
+        """
+        if len(self.presenter.ri_numbers) != 0:
             self.presenter.variance_test = VarianceTest(self.presenter.ri_numbers)
             self.presenter.do_variance_test()
             if self.presenter.variance_test.passed:
@@ -102,14 +173,20 @@ class MainWindow(QMainWindow):
             self.variance_tab.ls.setText(f"Valor Limite Superior: {self.presenter.variance_test.superior_limit}")
             self.variance_tab.variance.setText(f"Valor Varianza: {self.presenter.variance_test.variance}")
             self.variance_tab.li.setText(f"Valor Limite Inferior: {self.presenter.variance_test.inferior_limit}")
-    
+
     def showVarianceTestG(self):
+        """
+        Muestra la gráfica de límites y varianza para la prueba de varianzas.
+        """
         self.presenter.variance_test.plotLimitsAndVariance()
-    
-    #ks test events
+
+    # Eventos de prueba de Kolmogorov-Smirnov
     def doKsTest(self):
-        if(len(self.presenter.ri_numbers) != 0):
-            if(self.ks_tab.intervalsNum.text() != ""):
+        """
+        Realiza la prueba de Kolmogorov-Smirnov con los datos cargados.
+        """
+        if len(self.presenter.ri_numbers) != 0:
+            if self.ks_tab.intervalsNum.text() != "":
                 self.presenter.ks_test = KsTest(self.presenter.ri_numbers, int(self.ks_tab.intervalsNum.text()))
             else:
                 self.presenter.ks_test = KsTest(self.presenter.ri_numbers)
@@ -122,18 +199,30 @@ class MainWindow(QMainWindow):
             self.ks_tab.d_max.setText(f"Valor del D_max: {self.presenter.ks_test.d_max}")
             self.ks_tab.d_max_p.setText(f"Valor del d_max_p: {self.presenter.ks_test.d_max_p}")
             self.ks_tab.n.setText(f"Numero de intervalos: {self.presenter.ks_test.n_intervals}")
-    
+
     def showKsTestG(self):
+        """
+        Muestra la gráfica de D_max para la prueba de Kolmogorov-Smirnov.
+        """
         self.presenter.ks_test.plotDs()
-    
+
     def showKsTestG2(self):
+        """
+        Muestra la gráfica de probabilidad de los intervalos para la prueba de Kolmogorov-Smirnov.
+        """
         self.presenter.ks_test.plotIntervals()
-    
+
     def showKsTestG3(self):
+        """
+        Muestra la gráfica de frecuencia de los intervalos para la prueba de Kolmogorov-Smirnov.
+        """
         self.presenter.ks_test.plotIntervalsFreq()
-    
-    #chi2 test events
+
+    # Eventos de prueba de chi-cuadrado
     def doChi2Test(self):
+        """
+        Realiza la prueba de chi-cuadrado con los datos cargados.
+        """
         if len(self.presenter.ri_numbers) != 0:
             numIntervals = self.chi_tab.intervalsNum.text()
             a = self.chi_tab.a_input.text()
@@ -142,11 +231,13 @@ class MainWindow(QMainWindow):
                 self.presenter.chi2_test = ChiTest(self.presenter.ri_numbers, int(numIntervals), float(a), float(b))
             elif numIntervals != "" and a != "" and b == "":
                 self.showErrorMessage("Error", "Falta el valor de b.")
-                return#do not continue with the function
+                return
             elif numIntervals != "" and a == "" and b != "":
                 self.showErrorMessage("Error", "Falta el valor de a.")
-                return#do not continue with the function
-            else :
+                return
+            elif numIntervals != "" and a == "" and b == "":
+                self.presenter.chi2_test = ChiTest(self.presenter.ri_numbers, int(numIntervals))
+            else:
                 self.presenter.chi2_test = ChiTest(self.presenter.ri_numbers)
             self.presenter.do_chi2_test()
             if self.presenter.chi2_test.passed:
@@ -156,194 +247,17 @@ class MainWindow(QMainWindow):
             self.chi_tab.ni_min.setText(f"Valor Ni Maximo: {str(self.presenter.chi2_test.niMax)}")
             self.chi_tab.ni_max.setText(f"Valor Ni Minimo: {str(self.presenter.chi2_test.niMin)}")
             self.chi_tab.n.setText(f"Numero de intervalos: {self.presenter.chi2_test.intervals_amount}")
+            self.chi_tab.sum_chi2.setText(f"Valor de la sumatoria de Chi2: {self.presenter.chi2_test.sumChi2}")
+            self.chi_tab.chi_test.setText(f"Valor de la prueba Chi2 inversa: {self.presenter.chi2_test.chiReverse}")
 
-    
     def showChi2TestG(self):
+        """
+        Muestra la gráfica de valores Chi2 calculados.
+        """
         self.presenter.chi2_test.plotChi2()
-        
+
     def showChi2TestG2(self):
+        """
+        Muestra la gráfica de frecuencias observadas para la prueba de chi-cuadrado.
+        """
         self.presenter.chi2_test.plotFrequencies()
-        
-#poker tab Class
-class PokerTab(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window  # Reference to the MainWindow
-        self.initUI()
-
-    def initUI(self):
-        label = QLabel("PRUEBA DE POKER\n\nDescripcion de las manos:\n (D) Todos Diferentes\n (O) Un par \n (T) Dos pares \n (K) Tercia \n (F) Tercia y Par (Full house) \n (P )Cuatro del mismo valor (poker)\n (Q) Quintilla") 
-        self.status = QLabel("Estado de la prueba:")
-        self.sum_val = QLabel("Valor de la sumatoria: ")
-        self.chi_val = QLabel("Valor de la prueba chi inversa: ")
-        self.test = QPushButton("Hacer Prueba")
-        self.g1 = QPushButton("Ver Gráfica Sumatoria vs Chi Inversa")
-        self.g2 = QPushButton("Ver Gráfica Frecuencia de manos")
-        self.test.clicked.connect(self.main_window.doPokerTest)
-        self.g1.clicked.connect(self.main_window.showGraph1Poker)
-        self.g2.clicked.connect(self.main_window.showGraph2Poker)
-        layout = QVBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(self.sum_val)
-        layout.addWidget(self.chi_val)
-        layout.addWidget(self.status)
-        layout.addWidget(self.test)
-        layout.addWidget(self.g1)
-        layout.addWidget(self.g2)
-        self.setLayout(layout)
-
-#means tab Class
-class MeansTab(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window  # Reference to the MainWindow
-        self.initUI()
-
-    def initUI(self):
-        label = QLabel("PRUEBA DE MEDIAS") 
-        self.status = QLabel("Estado de la prueba: ")
-        self.ls = QLabel("Valor Limite Superior:")
-        self.mean = QLabel("Valor Media:")
-        self.li = QLabel("Valor Limite Inferior: ")
-        # Create two buttons
-        self.test = QPushButton("Hacer Prueba")
-        self.g = QPushButton("Ver Limites y media")
-        self.test.clicked.connect(self.main_window.doAverageTest)
-        self.g.clicked.connect(self.main_window.showAverageTestG)
-        layout = QVBoxLayout()
-        layout.addWidget(label) #prueba de medias
-        layout.addWidget(self.status)
-        layout.addWidget(self.ls)
-        layout.addWidget(self.mean)
-        layout.addWidget(self.li)
-        layout.addWidget(self.test)
-        layout.addWidget(self.g)
-        self.setLayout(layout)
-
-#variance tab Class
-class VarianceTab(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window  # Reference to the MainWindow
-        self.initUI()
-
-    def initUI(self):
-        label = QLabel("PRUEBA DE VARIANZAS") 
-        self.status = QLabel("Estado de la prueba: ")
-        self.ls = QLabel("Valor Limite Superior:")
-        self.variance = QLabel("Valor Varianza:")
-        self.li = QLabel("Valor Limite Inferior: ")
-        self.test = QPushButton("Hacer Prueba")
-        self.g = QPushButton("Ver Limites y Varianza")
-        self.test.clicked.connect(self.main_window.doVarianceTest)
-        self.g.clicked.connect(self.main_window.showVarianceTestG)
-        layout = QVBoxLayout()
-        layout.addWidget(label) #prueba de medias
-        layout.addWidget(self.status)
-        layout.addWidget(self.ls)
-        layout.addWidget(self.variance)
-        layout.addWidget(self.li)
-        layout.addWidget(self.test)
-        layout.addWidget(self.g)
-        self.setLayout(layout)
-        
-#Ks tab Class
-class KsTab(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window
-        self.initUI()
-
-    def initUI(self):
-        label = QLabel("PRUEBA Kolmogorov-Smirnov")
-        self.status = QLabel("Estado de la prueba: ")
-        self.mean = QLabel("Promedio de los datos:")
-        self.d_max = QLabel("Valor del D_max:")
-        self.d_max_p = QLabel("Valor del d_max_p: ")
-        self.test = QPushButton("Hacer Prueba")
-        self.n = QLabel("Numero de intervalos:")
-        self.g = QPushButton("Ver Grafica d_max y d_max_p")
-        self.g2 = QPushButton("Ver Grafica de probabilidad de todos los Intervalos")
-        self.g3 = QPushButton("Ver Grafica frecuencia de los intervalos")
-        self.test.clicked.connect(self.main_window.doKsTest)
-        self.g.clicked.connect(self.main_window.showKsTestG)
-        self.g2.clicked.connect(self.main_window.showKsTestG2)
-        self.g3.clicked.connect(self.main_window.showKsTestG3)
-        self.intervals = QLabel("Insertar Intervalos:")
-        self.intervalsNum = QLineEdit()
-        double_validator = QDoubleValidator()
-        self.intervalsNum.setValidator(double_validator)
-        self.a = QLabel("Insertar valor de a para Ni (menor):")
-        self.aNum = QLineEdit()
-        self.aNum.setValidator(double_validator)
-        layout = QVBoxLayout()
-        self.b = QLabel("Insertar valor de b para Ni (mayor):")
-        self.bNum = QLineEdit()
-        self.bNum.setValidator(double_validator)
-        layout = QVBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(self.intervals)
-        layout.addWidget(self.intervalsNum)
-        layout.addWidget(self.a)
-        layout.addWidget(self.aNum)
-        layout.addWidget(self.b)
-        layout.addWidget(self.bNum)
-        layout.addWidget(self.n)
-        layout.addWidget(self.status)
-        layout.addWidget(self.mean)
-        layout.addWidget(self.d_max)
-        layout.addWidget(self.d_max_p)
-        layout.addWidget(self.test)
-        layout.addWidget(self.g3)
-        layout.addWidget(self.g)
-        layout.addWidget(self.g2)
-        self.setLayout(layout)
-
-#Chi2 tab Class
-class ChiTab(QWidget):
-    def __init__(self, main_window):
-        super().__init__()
-        self.main_window = main_window
-        self.initUI()
-
-    def initUI(self):
-        label = QLabel("PRUEBA CHI-CUADRADO")
-        self.status = QLabel("Estado de la prueba: ")
-        self.ni_min = QLabel("Valor Ni Maximo:")
-        self.ni_max = QLabel("Valor Ni Minimo: ")
-        self.test = QPushButton("Hacer Prueba")
-        self.n = QLabel("Numero de intervalos por defecto 8:")
-        self.g = QPushButton("Ver Grafica Suma Chi2 y Chi2Inversa calculada")
-        self.g2 = QPushButton("Ver Grafica frecuencia de los intervalos")
-        self.test.clicked.connect(self.main_window.doChi2Test)
-        self.g.clicked.connect(self.main_window.showChi2TestG)
-        self.g2.clicked.connect(self.main_window.showChi2TestG2)
-        # Input fields for 'a' and 'b'
-        self.a_label = QLabel("Valor 'a' (Valor mas bajo Ni) por defecto 8:")
-        self.b_label = QLabel("Valor 'b' (Valor mas alto Ni) por defecto 10:")
-        self.a_input = QLineEdit()
-        self.b_input = QLineEdit()
-        double_validator = QDoubleValidator()
-        self.a_input.setValidator(double_validator)
-        self.b_input.setValidator(double_validator)
-        
-        self.intervals = QLabel("Insertar Intervalos:")
-        self.intervalsNum = QLineEdit()
-        self.intervalsNum.setValidator(double_validator)
-
-        layout = QVBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(self.intervals)
-        layout.addWidget(self.intervalsNum)
-        layout.addWidget(self.a_label)
-        layout.addWidget(self.a_input)
-        layout.addWidget(self.b_label)
-        layout.addWidget(self.b_input)
-        layout.addWidget(self.n)
-        layout.addWidget(self.status)
-        layout.addWidget(self.ni_max)
-        layout.addWidget(self.ni_min)
-        layout.addWidget(self.test)
-        layout.addWidget(self.g)
-        layout.addWidget(self.g2)
-        self.setLayout(layout)    
