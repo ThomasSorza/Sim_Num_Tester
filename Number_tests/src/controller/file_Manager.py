@@ -14,7 +14,7 @@ class FileManager:
 
     def storage_numbers(self):
         """
-        Lee los números desde el archivo de entrada y los almacena como objetos Decimal en self.numbers.
+        Lee los números desde el archivo de entrada y los almacena como floats en self.numbers.
 
         :raises FileNotFoundError: Se levanta si el archivo de entrada no existe.
         :raises Exception: Se levanta si ocurre un error no especificado durante la lectura.

@@ -1,23 +1,38 @@
-from PyQt6.QtWidgets import QWidget, QLineEdit, QVBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit
 from PyQt6.QtGui import QDoubleValidator, QFont
 
 class KsTab(QWidget):
+    """
+    Clase para la pestaña de la prueba de Kolmogorov-Smirnov.
+
+    Esta clase crea la interfaz de usuario y los elementos relacionados con la prueba de Kolmogorov-Smirnov.
+
+    Args:
+        main_window (MainWindow): Referencia a la ventana principal de la aplicación.
+
+    Methods:
+        initUI(): Inicializa la interfaz de usuario y los elementos relacionados con la prueba de Kolmogorov-Smirnov.
+    """
+
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
         self.initUI()
 
     def initUI(self):
-        label = QLabel("PRUEBA Kolmogorov-Smirnov")
-        
-        # Crear una fuente en negrita
+        """
+        Inicializa la interfaz de usuario y los elementos relacionados con la prueba de Kolmogorov-Smirnov.
+        """
+        label_text = "PRUEBA Kolmogorov-Smirnov"
+        label = QLabel(label_text)
+
+        # Crear una fuente en negrita para el título
         font = QFont()
         font.setBold(True)
         label.setFont(font)
 
         self.status = QLabel("Estado de la prueba:")
-        
-        # Crear una fuente en negrita
+        # Crear una fuente en negrita para el estado
         font_status = QFont()
         font_status.setBold(True)
         self.status.setFont(font_status)
