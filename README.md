@@ -17,14 +17,20 @@ En la parte inferior de la pantalla, encontrará un botón "Load File" que abre 
 ## Realización de Pruebas
 Después de cargar el archivo, puede hacer clic en cada una de las pestañas y luego en el botón "Hacer Prueba". Esto mostrará el estado de la prueba y todas sus características específicas en la pestaña seleccionada. Además, tendrá acceso a todas las gráficas generadas.
 
-##Prueba de Medias
-##Prueba de Varianzas
+## Prueba de Medias
+Hacer click en el boton hacer prueba.
+
+## Prueba de Varianzas
+Hacer click en el boton hacer prueba.
 
 ## Prueba de chi²
 Para la prueba de chi², es necesario ingresar un valor mínimo y un valor máximo. Ambos valores deben ingresarse juntos. Si ingresa solo un valor (por ejemplo, un valor A sin un valor B), se generará un error. Del mismo modo, si ingresa un valor B sin un valor A, también se generará un error. Asegúrese de ingresar ambos valores o ninguno para evitar errores.
 
-##Prueba KS
-##Prueba de Poker
+## Prueba KS
+Insertar intervalos o se utilizaran los valores por defecto.
+
+## Prueba de Poker
+Hacer click en el boton hacer prueba.
 
 ## Gráficas
 Para visualizar las gráficas generadas por las pruebas estadísticas, se abrirá una ventana emergente de Matplotlib. Puede interactuar con estas gráficas y explorar los resultados en detalle.
